@@ -1,0 +1,156 @@
+<%- layout("./boilerplate") %>
+
+<input type="hidden" id="time_format" value="<%= language.time_format %>">
+<input type="hidden" id="status" value="<%= language.status %>;;<%= language.status_type1 %>;;<%= language.status_type2 %>;;<%= language.status_type3 %>;;<%= language.status_type4 %>">
+<input type="hidden" id="all_size" value="<%= language.size_s %>;;<%= language.size_m %>;;<%= language.size_l %>">
+<input id="all_type" type="hidden" value="<%= language.pg_jenis_barang1 %>;;<%= language.pg_jenis_barang2 %>;;<%= language.pg_jenis_barang3 %>;;<%= language.pg_jenis_barang4 %>;;<%= language.pg_jenis_barang5 %>;;<%= language.pg_jenis_barang6 %>;;<%= language.pg_jenis_barang7 %>">
+
+
+<img id="layout-bg" src="./assets/Layout Background.png" alt="Layout Background" class="w-100 object-fit-cover object-pos" style="min-height: 300px; object-position: left;">
+
+<main id="layout" class="w-100 p-4 position-absolute top-0 start-50 translate-middle-x" style="max-width: 1240px;">
+    <%- include('header') %>
+
+    <section class="mt-5">
+        <h3 class="text-white fs-4 fw-semibold">Bookings</h3>
+    </section>
+
+    <!-- <section id="search" class="w-100 h-25 p-3 d-flex align-items-center gap-2 bg-white mt-4 rounded-3" style="height: 64px; line-height: 64px;"> -->
+    <section class="w-100 mt-4 mx-auto bg-white rounded-3 shadow-sm">
+        <div class="p-4">
+            <h4 class="fs-6 fw-medium"><%= language.past_books %></h4>
+            <div id="input" class="d-flex align-items-center gap-3 mt-3">
+                <button id="filter-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" class="p-3 text-start d-flex gap-2 align-items-center" style="width: 220px; background-color: #F7F9FC; outline: none; border: none;">
+                    <%= language.status %>
+                </button>
+                <ul class="dropdown-menu" style="width: 250px;">
+                    <li class="filter py-2 dropdown-item d-flex align-items-center gap-3 active-gray s-selected" style="cursor: pointer;">
+                        <%= language.status %>
+                    </li>
+                    <li class="filter py-2 dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                        <%= language.status_type1 %>
+                    </li>
+                    <li class="filter py-2 dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                        <%= language.status_type2 %>
+                    </li>
+                    <li class="filter py-2 dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                        <%= language.status_type3 %>
+                    </li>
+                    <li class="filter py-2 dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                        <%= language.status_type4 %>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="table table-borderless text-center align-middle" style="table-layout: fixed;">
+            <thead>
+                <div class="py-4 gap-4 d-flex fw-semibold text-start bg-transparent">
+                    <div style="flex: 1; padding-left: 24px;"><%= language.booked_on %></div>
+                    <div style="flex: 1;"><%= language.sender %></div>
+                    <div style="flex: 1;"><%= language.recipient %></div>
+                    <div class="hide-breakpoint" style="flex: 1;"><%= language.delivery_type %></div>
+                    <div style="flex: 1;"><%= language.harga %></div>
+                    <div class="hide-breakpoint" style="flex: 1;">Status</div>
+                </div>
+            </thead>
+            <tbody class="text-start">
+                <div id="history"></div>
+                <div id="no-data" class="py-4 text-center">
+                    <img src="./assets/Envelop.png" alt="Envelop" width="48px" height="48px">
+                    <p class="text-muted">No Data</p>
+                </div>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<%- include('navbar') %>
+
+<div class="modal fade" id="detail" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg w-auto" style="max-width: 90vw; min-width: 500px;">
+        <div class="modal-content">
+            <div class="modal-body d-flex flex-column-break gap-4">
+                <div id="map" class="custom-margin" style="max-width: 450px; min-width: 450px; height: 450px"></div>
+                <div class="m-4 custom-margin custom-width d-flex flex-column justify-content-between align-items-end gap-5">
+                    <div class="d-flex flex-column gap-5">
+                        <div class="d-flex gap-5">
+                            <div class="d-flex align-items-center gap-2">
+                                <img id="status-icon" src="./assets/Success.png" alt="Icon" width="24px" height="24px">
+                                <div class="d-flex flex-column">
+                                    <span id="status-text" class="d-inline-block">Barang sudah terkirim</span>
+                                    <small id="time" class="d-inline-block">09 Nov, 06:39 PM</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="./assets/Profile.jpg" alt="Profile" width="40px" height="40px">
+                                <div class="d-flex flex-column">
+                                    <span id="driver-name" class="d-inline-block">Budi Yanto</span>
+                                    <small class="d-inline-block d-flex align-items-center gap-1">
+                                        <span id="driver-plat">BK 1278 AS</span> &#183; <span id="driver-rating">5</span> <img src="./assets/Star.png" alt="Star" width="16px" height="16px">
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span><%= language.receipt %> <span class="fw-semibold" id="resi"></span></span>
+                            <div class="d-flex gap-4 mt-2">
+                                <div class="d-flex gap-2" style="flex: 1;">
+                                    <img src="./assets/Pickup Small.svg" alt="Pickup" width="24px" height="24px">
+                                    <div class="d-flex flex-column gap-3">
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.alamat_pengirim %></span>
+                                            <small id="alamat-pengirim"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.note %></span>
+                                            <small id="catatan-pengirim"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span>
+                                                <span id="nama-pengirim"></span> <span id="nomor-pengirim"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2" style="flex: 1;">
+                                    <img src="./assets/Drop Off.svg" alt="Drop Off" width="24px" height="24px">
+                                    <div class="d-flex flex-column gap-3">
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.alamat_penerima %></span>
+                                            <small id="alamat-penerima"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.note %></span>
+                                            <small id="catatan-penerima"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span>
+                                                <span id="nama-penerima"></span> <span id="nomor-penerima"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span><%= language.pg_delivery %></span>
+                            <div class="d-flex flex-column gap-2 ps-4 mt-2">
+                                <span>
+                                    <%= language.size %> : <span id="size"></span>
+                                </span>
+                                <span>
+                                    <%= language.weight %> : <span id="weight"></span> kg
+                                </span>
+                                <span>
+                                    <%= language.type %> : <span id="type"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width: 200px; background-color: #00b14f; outline: none; border: none;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<%- layout("./boilerplate") %>
+
+<img id="layout-bg" src="./assets/Layout Background.png" alt="Layout Background" class="w-100 object-fit-cover object-pos" style="min-height: 300px; object-position: left;">
+
+<main id="layout" class="w-100 p-4 position-absolute top-0 start-50 translate-middle-x" style="max-width: 1240px;">
+    <%- include('header') %>
+
+    <section class="mt-5">
+        <h3 class="text-white fs-4 fw-semibold"><%= language.pesanan %></h3>
+    </section>
+
+    <section class="w-100 mt-4 mx-auto bg-white rounded-3 shadow-sm">
+        <table class="table table-borderless text-center align-middle" style="table-layout: fixed;">
+            <thead>
+                <div class="py-4 gap-4 d-flex fw-semibold text-start bg-transparent">
+                    <div style="flex: 1; padding-left: 24px;"><%= language.sender %></div>
+                    <div class="hide-breakpoint" style="flex: 1;"><%= language.recipient %></div>
+                    <div style="flex: 1;"><%= language.pesanan_dari %></div>
+                    <div style="flex: 1;"><%= language.pesanan_tujuan %></div>
+                    <div style="flex: 1;"><%= language.harga %></div>
+                    <div class="hide-breakpoint" style="flex: 1;"><%= language.jarak %></div>
+                </div>
+            </thead>
+            <tbody class="text-start">
+                <div id="history"></div>
+                <div id="no-data" class="py-4 text-center">
+                    <img src="./assets/Envelop.png" alt="Envelop" width="48px" height="48px">
+                    <p class="text-muted">No Data</p>
+                </div>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<%- include('navbar') %>

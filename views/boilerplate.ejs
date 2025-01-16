@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <% if (css !== undefined) { %>
+        <link href="./css/<%= css %>" rel="stylesheet">
+    <% } %>
+    <title><%= title %></title>
+</head>
+<body class="w-100 min-vh-100 position-relative" style="min-width: 450px;">
+    <%- body %>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <% if (js !== undefined) { %>
+        <script src="./js/<%= js %>"></script>
+    <% } %>
+</body>
+</html>

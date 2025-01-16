@@ -1,0 +1,45 @@
+<section id="header-large" class="w-100">
+    <div class="d-flex justify-content-between">
+        <span class="d-flex align-items-center gap-4">
+            <a href="/" class="d-flex align-items-center">
+                <img src="./assets/Logo.svg" alt="Logo" width="144px" height="28px">
+            </a>
+            <nav class="d-flex">
+                <a href="/" class="px-3 text-decoration-none text-white-50 hover-white" style="cursor: pointer;"><%= language.menu1 %></a>
+                <a href="/pemesanan" class="px-3 text-decoration-none text-white-50 hover-white" style="cursor: pointer;"><%= language.menu2 %></a>
+                <% if (user.driver) { %>
+                    <a href="/dashboard" class="px-3 text-decoration-none text-white-50 hover-white" style="cursor: pointer;"><%= language.menu3 %></a>
+                <% } %>
+            </nav>
+        </span>
+        <span id="profile" class="d-flex justify-content-center align-items-center text-white bg-success rounded-circle position-relative" style="width: 28px; height: 28px; line-height: 28px; cursor: default">
+            <%= user.name.slice(0, 1) %>
+            <div id="profile-menu" class="dropdown-menu p-0 position-absolute top-100 end-0" style="display: none;">
+                <button class="dropdown-item text-truncate" style="max-width: 200px"><%= user.name %></button>
+                <div class="position-relative">
+                    <a id="language" class="dropdown-item" href="#">
+                        <img class="me-2" src="<% if (language.language === 'Bahasa') { %>./assets/Indonesia.svg<% } else { %>./assets/Singapore.svg<% } %>" alt="Bendera 1" width="18px" height="12px"><%= language.language %>
+                    </a>
+                    <div id="language-option" class="dropdown-menu p-0 position-absolute top-0 end-100" style="display: none;">
+                        <a id="new-language" class="dropdown-item" href="#">
+                            <img class="me-2" src="<% if (language.lang_option === 'Bahasa') { %>./assets/Indonesia.svg<% } else { %>./assets/Singapore.svg<% } %>" alt="Bendera 2" width="18px" height="12px"><%= language.lang_option %>
+                        </a>
+                    </div>
+                </div>
+                <button id="logout" class="dropdown-item text-danger">Logout</button>
+            </div>
+        </span>
+    </div>
+</section>
+<section id="header-small" class="w-100">
+    <div class="d-flex justify-content-between">
+        <a href="/" class="d-flex align-items-center">
+            <img src="./assets/Logo.svg" alt="Logo" width="102px" height="20px">
+        </a>
+        <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawer-menu" aria-controls="drawer-menu" style="border: none;">
+            <img src="./assets/Menu.svg" alt="Menu">
+        </button>
+    </div>
+</section>
+
+<script src="./js/header.js"></script>

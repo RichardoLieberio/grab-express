@@ -1,0 +1,40 @@
+<aside class="offcanvas offcanvas-end" tabindex="-1" id="drawer-menu" aria-labelledby="drawermenuLabel" style="max-width: 234px; padding: 40px 16px; background-color: #1D8484;">
+    <ul class="list-unstyled text-start d-flex flex-column gap-4">
+        <li>
+            <button type="button" class="btn" data-bs-dismiss="offcanvas" aria-label="Close" style="width: fit-content; height: fit-content;">
+                <img src="./assets/Close White.png" alt="Close" width="24px" height="24px">
+            </button>
+        </li>
+        <li>
+            <a href="/" class="text-decoration-none text-white"><%= language.menu1 %></a>
+        </li>
+        <li>
+            <a href="/pemesanan" class="text-decoration-none text-white"><%= language.menu2 %></a>
+        </li>
+        <% if (user.driver) { %>
+            <li>
+                <a href="/dashboard" class="text-decoration-none text-white"><%= language.menu3 %></a>
+            </li>
+        <% } %>
+        <li class="dropdown">
+            <a href="#" class="text-decoration-none text-white dropdown-toggle" id="langDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <%= language.language %>
+            </a>
+            <ul class="dropdown-menu bg-transparent border-0" aria-labelledby="langDropDown">
+                <li>
+                    <button class="dropdown-item text-white text-truncate" style="max-width: 200px"><%= user.name %></button>
+                </li>
+                <li>
+                    <a id="new-language2" class="dropdown-item text-white">
+                        <img class="me-2" src="<% if (language.lang_option === 'Bahasa') { %>./assets/Indonesia.svg<% } else { %>./assets/Singapore.svg<% } %>" alt="Bendera 2" width="18px" height="12px"><%= language.lang_option %>
+                    </a>
+                </li>
+                <li>
+                    <button id="logout2" class="dropdown-item text-white">Logout</button>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</aside>
+
+<script src="./js/navbar.js"></script>

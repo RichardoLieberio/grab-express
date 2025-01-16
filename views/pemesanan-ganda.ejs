@@ -1,0 +1,441 @@
+<%- layout("./boilerplate") %>
+
+<input id="geocoding_api" type="hidden" value="<%= geocoding_api %>">
+<input id="default_lat" type="hidden" value="<%= default_lat %>">
+<input id="default_long" type="hidden" value="<%= default_long %>">
+<input id="pickup_placeholder" type="hidden" value="<%= language.cari_placeholder %>">
+<input id="destination_placeholder" type="hidden" value="<%= language.tujuan_placeholder %>">
+<input id="delivery_option" type="hidden" value="<%= language.option %>">
+<input id="max_weight" type="hidden" value="<%= max_weight %>">
+<input id="item_type" type="hidden" value="<%= language.pg_jenis_barang1 %>;;<%= language.pg_jenis_barang2 %>;;<%= language.pg_jenis_barang3 %>;;<%= language.pg_jenis_barang4 %>;;<%= language.pg_jenis_barang5 %>;;<%= language.pg_jenis_barang6 %>;;<%= language.pg_jenis_barang7 %>">
+<input id="max_order" type="hidden" value="<%= language.max_order %>">
+
+<input id="language_pg_delivery" type="hidden" value="<%= language.pg_delivery %>">
+<input id="language_pg_route" type="hidden" value="<%= language.pg_route %>">
+<input id="language_from" type="hidden" value="<%= language.from %>">
+<input id="language_to" type="hidden" value="<%= language.to %>">
+<input id="language_pg_detail_placeholder" type="hidden" value="<%= language.pg_detail_placeholder %>">
+<input id="language_pg_sender_placeholder" type="hidden" value="<%= language.pg_sender_placeholder %>">
+<input id="language_pg_no_telp_placeholder" type="hidden" value="<%= language.pg_no_telp_placeholder %>">
+<input id="language_pg_detail_placeholder" type="hidden" value="<%= language.pg_detail_placeholder %>">
+<input id="language_pg_recipient_placeholder" type="hidden" value="<%= language.pg_recipient_placeholder %>">
+<input id="language_pg_no_telp_placeholder" type="hidden" value="<%= language.pg_no_telp_placeholder %>">
+<input id="language_pg_detail" type="hidden" value="<%= language.pg_detail %>">
+<input id="language_pg_berat" type="hidden" value="<%= language.pg_berat %>">
+<input id="language_pg_jenis_barang" type="hidden" value="<%= language.pg_jenis_barang %>">
+<input id="language_pg_opsi" type="hidden" value="<%= language.pg_opsi %>">
+<input id="language_option" type="hidden" value="<%= language.option %>">
+<input id="language_pg_detail_pembayaran" type="hidden" value="<%= language.pg_detail_pembayaran %>">
+<input id="language_cash_recipient" type="hidden" value="<%= language.cash_recipient %>">
+<input id="language_cash_sender" type="hidden" value="<%= language.cash_sender %>">
+<input id="language_pesan" type="hidden" value="<%= language.pesan %>">
+<input id="language_pengantaran" type="hidden" value="<%= language.pengantaran %>">
+<input id="language_balance" type="hidden" value="<%= language.balance %>">
+<input id="ovo_saldo" type="hidden" value="<%= rekening.Ovo.getSaldo() %>">
+<input id="mastercard_saldo" type="hidden" value="<%= rekening.Mastercard.getSaldo() %>">
+<input id="visa_saldo" type="hidden" value="<%= rekening.Visa.getSaldo() %>">
+
+<img id="layout-bg" src="./assets/Layout Background.png" alt="Layout Background" class="w-100 object-fit-cover object-pos" style="min-height: 300px; object-position: left;">
+
+<main id="layout" class="w-100 p-4 position-absolute top-0 start-50 translate-middle-x" style="max-width: 1240px;">
+    <%- include('header') %>
+
+    <div class="row mt-5">
+        <div class="col-1 hide-breakpoint">
+            <div class="position-sticky" style="top: 20px;">
+                <div class="btn btn-light rounded-2 mb-3 gap-2" style="padding: 15px;">
+                    <div id="step-indicator" class="d-flex flex-column gap-1">
+                        <% for(let i = 1; i <= allOrder.length; i ++) { %>
+                            <div class="text-black-50 fw-bold d-flex align-items-center justify-content-center" style="width: 20px; height: 20px;"><%= i %></div>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="add-delivery btn btn-light rounded-2" style="padding: 15px;">
+                    <div class="text-black-50 fw-bold d-flex align-items-center justify-content-center" style="width: 20px; height: 20px;">+</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-7" id="delivery-forms">
+            <% for (const [index, delivery] of allOrder.entries()) { %>
+                <section class="delivery-section p-4 bg-white shadow-sm rounded mb-3" id="<%= index + 1 %>">
+                    <input class="pickup" type="hidden" value="<%= delivery.pickup.long %>;;<%= delivery.pickup.lat %>;;<%= delivery.pickup.loc %>;;<%= delivery.pickup.detail %>">
+                    <input class="destination" type="hidden" value="<%= delivery.destination.long %>;;<%= delivery.destination.lat %>;;<%= delivery.destination.loc %>;;<%= delivery.destination.detail %>">
+                    <input class="instant-bike" type="hidden" value="<%= delivery.detail_price.instant.bike %>">
+                    <input class="sameday-bike" type="hidden" value="<%= delivery.detail_price.same_day.bike %>">
+                    <input class="instant-car" type="hidden" value="<%= delivery.detail_price.instant.car %>">
+                    <input class="sameday-car" type="hidden" value="<%= delivery.detail_price.same_day.car %>">
+                    <input class="delivery-option" type="hidden" value="<%= delivery.delivery.option %>">
+                    <input class="distance" type="hidden" value="<%= delivery.distance %>">
+                    <input class="price" type="hidden" value="<%= delivery.price %>">
+
+                    <div class="mb-4 d-flex justify-content-between align-items-center">
+                        <h5 class="index fw-semi-bold"><%= language.pg_delivery %> 1</h5>
+                        <div class="d-flex align-items-center">
+                            <button class="delete-icon bg-transparent border-0 d-none" width="16px" height="16px">
+                                <img src="./assets/Trash.svg" alt="Trash Icon">
+                            </button>
+                            <button class="copy-icon bg-transparent border-0" width="16px" height="16px">
+                                <img src="./assets/Copy.svg" alt="Copy Icon">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="mb-4 form-label fw-semibold text-black-50"><%= language.pg_route %></label>
+                        <div class="mb-4 d-flex align-items-center gap-2 from filled-map" data-bs-toggle="offcanvas" data-bs-target="#maps" aria-controls="maps">
+                            <img src="./assets/Pickup Large.svg" alt="Pickup Location" width="24px" height="24px">
+                            <input type="text" value="<%= delivery.pickup.loc %>" placeholder="<%= language.from %>" class="w-100 p-3 border-0 pickup-loc" style="outline: none; cursor: pointer; background-color: #F6F8FB;" readonly autocomplete="off">
+                        </div>
+                        <div class="w-full mb-4 d-flex flex-column gap-2 d-none" style="max-width: 400px; margin-left: 32px;">
+                            <input type="text" value="<%= delivery.pickup.detail %>" placeholder="<%= language.pg_detail_placeholder %>" class="pickup-detail auto-save py-2 px-3" style="background-color: #F6F8FB; border: none; outline: none; font-size: 14px;">
+                            <div class="d-flex gap-3">
+                                <input type="text" value="<%= delivery.sender.name %>" placeholder="<%= language.pg_sender_placeholder %>" class="pickup-name auto-save py-2 px-3" style="flex: 1; background-color: #F6F8FB; border: none; outline: none; font-size: 14px;">
+                                <input type="text" value="<%= delivery.sender.phone %>" placeholder="<%= language.pg_no_telp_placeholder %>" class="phone pickup-phone auto-save py-2 px-3" style="flex: 1; background-color: #F6F8FB; border: none; outline: none; font-size: 14px;">
+                            </div>
+                        </div>
+                        <div class="mb-4 d-flex align-items-center gap-2 to filled-map" data-bs-toggle="offcanvas" data-bs-target="#maps" aria-controls="maps">
+                            <img src="./assets/Drop Off.svg" alt="Pickup Location" width="24px" height="24px">
+                            <input type="text" value="<%= delivery.destination.loc %>" placeholder="<%= language.to %>" class="w-100 p-3 border-0 destination-loc" style="outline: none; cursor: pointer; background-color: #F6F8FB;" readonly autocomplete="off">
+                        </div>
+                        <div class="w-full mb-4 d-flex flex-column gap-2 d-none" style="max-width: 400px; margin-left: 32px;">
+                            <input type="text" value="<%= delivery.destination.detail %>" placeholder="<%= language.pg_detail_placeholder %>" class="destination-detail auto-save py-2 px-3" style="background-color: #F6F8FB; border: none; outline: none; font-size: 14px;">
+                            <div class="d-flex gap-3">
+                                <input type="text" value="<%= delivery.recipient.name %>" placeholder="<%= language.pg_recipient_placeholder %>" class="destination-name auto-save py-2 px-3" style="flex: 1; background-color: #F6F8FB; border: none; outline: none; font-size: 14px;">
+                                <input type="text" value="<%= delivery.recipient.phone %>" placeholder="<%= language.pg_no_telp_placeholder %>" class="phone destination-phone auto-save py-2 px-3" style="flex: 1; background-color: #F6F8FB; border: none; outline: none; font-size: 14px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="mb-3 form-label fw-semibold text-black-50"><%= language.pg_detail %></label>
+                        <br>
+                        <img src="./assets/<% if (delivery.item.size === 's') { %>Small<% } else if (delivery.item.size === 'm') { %>Medium<% } else { %>Large<% } %>.png" class="<% if (!delivery.item.size) { %>d-none<% } %>" alt="Small" height="148px">
+                        <div class="d-flex gap-3 mt-3 flex-column-break">
+                            <div class="d-flex justify-content-evenly" style="flex: 1;">
+                                <button class="border-0 size-button <% if (delivery.item.size === 's') { %>size-selected<% } %>" style="width: 48px; height: 48px; border-radius: 50%; outline: none; background-color: #F7F9FC;">S</button>
+                                <button class="border-0 size-button <% if (delivery.item.size === 'm') { %>size-selected<% } %>" style="width: 48px; height: 48px; border-radius: 50%; outline: none; background-color: #F7F9FC;">M</button>
+                                <button class="border-0 size-button <% if (delivery.item.size === 'l') { %>size-selected<% } %>" style="width: 48px; height: 48px; border-radius: 50%; outline: none; background-color: #F7F9FC;">L</button>
+                            </div>
+                            <div class="p-3 d-flex align-items-center" style="flex: 1; height: 48px; background-color: #F7F9FC;">
+                                <input type="number" value="<%= delivery.item.weight %>" placeholder="<%= language.pg_berat %>" class="weight auto-save bg-transparent border-0" style="width: 100%; background-color: #F7F9FC; outline: none;">
+                                <span class="fw-semibold text-black-50">KG</span>
+                            </div>
+                            <button type="button" data-bs-toggle="dropdown" aria-expanded="false" class="py-2 px-3 text-black-50 text-start text-truncate" style="flex: 1; background-color: #F7F9FC; outline: none; border: none;">
+                                <% const barang = [language.pg_jenis_barang1, language.pg_jenis_barang2, language.pg_jenis_barang3, language.pg_jenis_barang4, language.pg_jenis_barang5, language.pg_jenis_barang6, language.pg_jenis_barang7] %>
+                                <% if (delivery.item.type) { %><span class="text-black"><%= barang[delivery.item.type] %></span><% } else { %><%= language.pg_jenis_barang %><% } %>
+                            </button>
+                            <ul class="dropdown-menu" style="width: 220px;">
+                                <% for (const [i, e] of barang.entries()) { %>
+                                    <li class="py-2 dropdown-item active-gray item-type <% if (delivery.item.type === i) { %>s-selected<% } %>" style="cursor: pointer;"><%= e %></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="mb-4 form-label fw-semibold text-black-50"><%= language.pg_opsi %></label>
+                        <div class="d-flex gap-3 delivery-option">
+                            <button type="button" data-bs-toggle="offcanvas" data-bs-target="#delivery-drawer" aria-controls="delivery-drawer" class="delivery-drawer <%= delivery.delivery.option %> ps-3 d-flex align-items-center gap-2 rounded-3 border-0 disabled-not-allowed disabled-opacity-50" style="height: 64px; background-color: #f8f8f8; cursor: pointer; flex: 1;"
+                            <% if (!delivery.pickup.long || !delivery.pickup.lat || !delivery.destination.long || !delivery.destination.lat) { %><%= "disabled" %><% } %>>
+                                <img class="delivery-icon" src="./assets/<% if (delivery.delivery.option === 'instant') { %>Instant Delivery.png<% } else if (delivery.delivery.option === 'same_day') { %>Same Day Delivery.png<% } else { %>Delivery Option.svg<% } %>" alt="Delivery Option" width="20px" height="20px">
+                                <span class="delivery-text"><% if (delivery.delivery.option === 'instant') { %>Instant<% } else if (delivery.delivery.option === 'same_day') { %>Same Day<% } else { %><%= language.option %><% } %></span>
+                            </button>
+                            <button type="button" data-bs-toggle="dropdown" aria-expanded="false" class="vehicle-button ps-3 d-flex align-items-center text-start gap-3 rounded-3 border-0 disabled-not-allowed disabled-opacity-50" style="height: 64px; background-color: #f8f8f8; cursor: pointer; width: 300px;"
+                            <% const condition = delivery.pickup.long && delivery.pickup.lat && delivery.pickup.loc && delivery.destination.long && delivery.destination.lat && delivery.destination.loc && delivery.delivery.option %>
+                            <% if (!condition) { %>disabled<% } %>>
+                                <% if (condition && delivery.delivery.vehicle === 'bike') { %>
+                                    <img src="./assets/Bike.png" alt="Bike" style="cursor: pointer;" width="32px" height="32px">
+                                    <div>
+                                        <p class="p-0 m-0 lh-1" style="cursor: pointer;">Bike</p>
+                                        <small class="p-0 m-0 lh-1 text-black-50" style="cursor: pointer;">For small items, max 20kg</small>
+                                    </div>
+                                <% } else if (condition && delivery.delivery.vehicle === 'car') { %>
+                                    <img src="./assets/Car.png" alt="Car" style="cursor: pointer;" width="32px" height="32px">
+                                    <div>
+                                        <p class="p-0 m-0 lh-1" style="cursor: pointer;">Car</p>
+                                        <small class="p-0 m-0 lh-1 text-black-50" style="cursor: pointer;">Max 150kg (100&#xd7;100&#xd7;100 cm)</small>
+                                    </div>
+                                <% } else { %>
+                                    <img class="vehicle-img" src="./assets/Warning Red.svg" alt="Warning Red" width="20px" height="20px">
+                                    <span class="vehicle-text">No vehicle selected</span>
+                                <% } %>
+                            </button>
+                            <div class="dropdown-menu vehicle-container">
+                                <button class="vehicle bike <% if (delivery.delivery.vehicle === 'bike') { %>s-selected<% } %> py-2 dropdown-item d-flex align-items-center gap-3 active-gray disabled-opacity-50" style="cursor: pointer;"
+                                <% if (delivery.item.size === 'l') { %>disabled<% } %>>
+                                    <img src="./assets/Bike.png" alt="Bike" style="cursor: pointer;" width="32px" height="32px">
+                                    <div>
+                                        <p class="p-0 m-0 lh-1" style="cursor: pointer;">Bike</p>
+                                        <small class="p-0 m-0 lh-1 text-black-50" style="cursor: pointer;">For small items, max 20kg</small>
+                                    </div>
+                                </button>
+                                <button class="vehicle car <% if (delivery.delivery.vehicle === 'car') { %>s-selected<% } %> py-2 dropdown-item d-flex align-items-center gap-3 active-gray disabled-opacity-50" style="cursor: pointer;">
+                                    <img src="./assets/Car.png" alt="Car" style="cursor: pointer;" width="32px" height="32px">
+                                    <div>
+                                        <p class="p-0 m-0 lh-1" style="cursor: pointer;">Car</p>
+                                        <small class="p-0 m-0 lh-1 text-black-50" style="cursor: pointer;">Max 150kg (100&#xd7;100&#xd7;100 cm)</small>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="mb-4 form-label fw-semibold text-black-50"><%= language.pg_detail_pembayaran %></label>
+                        <div class="d-flex flex-column gap-3">
+                            <button type="button" data-bs-toggle="dropdown" aria-expanded="false" class="p-3 payment-button text-black-50 text-start d-flex gap-2 align-items-center" style="width: 220px; background-color: #F7F9FC; outline: none; border: none;">
+                                <% if (delivery.payment.method == 0) { %>
+                                    <img src="./assets/Ovo.svg" alt="Ovo" width="22px" height="22px">
+                                    <span class="text-black currency"><%= rekening.Ovo.getSaldo() %></span>
+                                <% } else if (delivery.payment.method == 1) { %>
+                                    <img src="./assets/Mastercard.svg" alt="Mastercard" width="22px" height="22px">
+                                    <span class="text-black currency"><%= rekening.Mastercard.getSaldo() %></span>
+                                <% } else if (delivery.payment.method == 2) { %>
+                                    <img src="./assets/Visa.png" alt="Visa" width="22px" height="22px">
+                                    <span class="text-black currency"><%= rekening.Visa.getSaldo() %></span>
+                                <% } else if (delivery.payment.method == 3) { %>
+                                    <img src="./assets/Cash.svg" alt="Cash" width="22px" height="22px">
+                                    <span class="text-black"><%= language.cash_recipient %></span>
+                                <% } else if (delivery.payment.method == 4) { %>
+                                    <img src="./assets/Cash.svg" alt="Cash" width="22px" height="22px">
+                                    <span class="text-black"><%= language.cash_sender %></span>
+                                <% } %>
+                            </button>
+                            <p class="d-none" style="color: red;"><%= language.balance %></p>
+                            <ul class="dropdown-menu payment-container" style="width: 250px;">
+                                <li class="py-2 payment <% if (delivery.payment.method == 0) { %>s-selected<% } %> dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                                    <img src="./assets/Ovo.svg" alt="Ovo" width="22px" height="22px">
+                                    <span class="text-black currency"><%= rekening.Ovo.getSaldo() %></span>
+                                </li>
+                                <li class="py-2 payment <% if (delivery.payment.method == 1) { %>s-selected<% } %> dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                                    <img src="./assets/Mastercard.svg" alt="Mastercard" width="22px" height="22px">
+                                    <span class="text-black currency"><%= rekening.Mastercard.getSaldo() %></span>
+                                </li>
+                                <li class="py-2 payment <% if (delivery.payment.method == 2) { %>s-selected<% } %> dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                                    <img src="./assets/Visa.png" alt="Visa" width="22px" height="22px">
+                                    <span class="text-black currency"><%= rekening.Visa.getSaldo() %></span>
+                                </li>
+                                <li class="py-2 payment <% if (delivery.payment.method == 3) { %>s-selected<% } %> dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                                    <img src="./assets/Cash.svg" alt="Cash" width="22px" height="22px">
+                                    <span class="text-black"><%= language.cash_recipient %></span>
+                                </li>
+                                <li class="py-2 payment <% if (delivery.payment.method == 4) { %>s-selected<% } %> dropdown-item d-flex align-items-center gap-3 active-gray" style="cursor: pointer;">
+                                    <img src="./assets/Cash.svg" alt="Cash" width="22px" height="22px">
+                                    <span class="text-black"><%= language.cash_sender %></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            <% } %>
+            <button id="last-element" class="add-delivery btn btn-outline-primary w-100 mt-3">+ Tambahkan pengantaran</button>
+        </div>
+
+        <div class="col-4 hide-breakpoint">
+            <div class="p-4 bg-white shadow-sm rounded" style="position: sticky; top: 20px;">
+                <div class="d-flex flex-column gap-4">
+                    <h5 class="fw-semibold fs-6"><%= language.price_breakdown %></h5>
+                    <div id="price-summary" class="d-flex flex-column gap-2">
+                        <% let totalPrice = 0; %>
+                        <% for (const [index, delivery] of allOrder.entries()) { %>
+                            <div class="d-flex justify-content-between">
+                                <span class="prices fs-6"><%= language.pg_delivery %> <%= index + 1 %></span>
+                                <span class="harga currency fs-6">
+                                    <% if (delivery.delivery.option && delivery.delivery.vehicle) { %>
+                                        <% totalPrice += delivery.price; %>
+                                        <%= delivery.price %>
+                                    <% } else { %>0<% } %>
+                                </span>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div id="price-last-element" class="d-flex justify-content-between">
+                        <span class="fw-semibold" style="font-size: 18px;"><%= language.total %></span>
+                        <span id="total" class="fw-semibold currency" id="total-price" style="font-size: 18px;"><%= totalPrice %></span>
+                    </div>
+                </div>
+                <button id="submit" class="rounded-2 mt-3 fs-6 fw-semibold text-white w-100 book-disabled" style="height: 56px; background-color: #00b14f; border: none; outline: none;" <% if (disableTotal) { %>disabled<% } %>>
+                    <%= language.pesan %> 1 <%= language.pengantaran %>
+                </button>
+
+                <!-- <button id="order-button" class="w-100 mt-3 disabled-not-allowed" disabled>Pesan 1 Pengantaran</button> -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('navbar') %>
+
+<aside class="offcanvas offcanvas-end" tabindex="-1" id="maps" aria-labelledby="mapsLabel" style="width: 495px;">
+    <button type="button" class="btn position-absolute" data-bs-dismiss="offcanvas" aria-label="Close" style="width: fit-content; height: fit-content; top: 12px; left: 12px; z-index: 999999;">
+        <img src="./assets/Close Black.svg" alt="Close" width="20px" height="20px">
+    </button>
+    <div class="h-100 d-flex flex-column justify-content-between">
+        <div>
+            <div class="w-100" id="map" style="height: 400px;"></div>
+            <div class="position-relative">
+                <div id="lokasi_container" class="w-100 px-4 position-absolute no-close" style="bottom: -16px; display: none; z-index: 1000;">
+                    <div id="list_lokasi" class="w-100 d-flex flex-column overflow-auto no-scrollbar py-2 rounded-2 no-close" style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.2)">
+                        <!-- <span class="w-100 py-4 text-center text-black-50 bg-white">Tidak ada data</span> -->
+                    </div>
+                </div>
+                        <!-- <p class="dropdown-item fs-5 fw-semibold my-1" style="cursor: pointer;">nama</p> -->
+                </div>
+                <div class="position-relative p-4 no-close">
+                    <input type="text" class="w-100 border-0 no-close" id="cari" placeholder="<%= language.cari_placeholder %>" style="height: 62px; padding-left: 56px; background-color: #F6F8FB; outline: none;" autocomplete="off">
+                    <img id="cari-icon" src="./assets/Pickup Large.svg" alt="Search Icon" width="24px" height="24px" class="position-absolute top-50 translate-middle-y no-close" style="left: 40px;">
+                </div>
+            </div>
+        </div>
+        <div class="p-4">
+            <button data-bs-dismiss="offcanvas" aria-label="Close" class="rounded-2 text-white w-100" style="height: 56px; background-color: #00b14f; border-color: #00b14f; text-shadow: 0 -1px 0 rgba(0, 0, 0, .12); box-shadow: 0 2px 0 rgba(0, 0, 0, .045);">Confirm</button>
+        </div>
+    </div>
+</aside>
+
+<aside class="offcanvas offcanvas-end" tabindex="-1" id="delivery-drawer" aria-labelledby="deliveryOptionsLabel" style="width: 495px;">
+    <button type="button" class="btn position-absolute" data-bs-dismiss="offcanvas" aria-label="Close" style="width: fit-content; height: fit-content; top: 12px; left: 12px; z-index: 999999;">
+        <img src="./assets/Close Black.svg" alt="Close" width="20px" height="20px">
+    </button>
+    <h3 class="fs-4" style="margin-top: 18px; margin-left: 64px;"><%= language.delivery_opt %></h3>
+    <section class="p-4 d-flex flex-column gap-2" style="margin-top: 56px;">
+        <button id="instant" class="p-3 rounded-2 d-flex gap-3 disabled-border-green bg-transparent" style="border: 1px solid #E5E9F0; cursor: pointer;">
+            <div class="h-100 d-flex align-items-center">
+                <img src="./assets/Instant Delivery.png" alt="Instant Delivery" width="32px" height="32px">
+            </div>
+            <div class="d-flex flex-column gap-2 align-items-start" style="flex: 1;">
+                <p class="fw-semibold p-0 m-0 lh-1 text-black">Instant</p>
+                <p class="p-0 m-0 lh-1 text-black-50 text-start"><%= language.instant %></p>
+            </div>
+            <span id="instant-price" class="currency fw-semibold text-black"></span>
+        </button>
+        <button id="same-day" class="p-3 rounded-2 d-flex gap-3 disabled-border-green bg-transparent" style="border: 1px solid #E5E9F0; cursor: pointer;">
+            <div class="h-100 d-flex align-items-center">
+                <img src="./assets/Same Day Delivery.png" alt="Same Day Delivery" width="32px" height="32px">
+            </div>
+            <div class="d-flex flex-column gap-2 align-items-start" style="flex: 1;">
+                <p class="fw-semibold p-0 m-0 lh-1 text-black">Same Day</p>
+                <p class="p-0 m-0 lh-1 text-black-50 text-start"><%= language.same_day %></p>
+            </div>
+            <span id="same-day-price" class="currency fw-semibold text-black"></span>
+        </button>
+    </section>
+</aside>
+
+<!-- <aside class="offcanvas offcanvas-end" tabindex="-1" id="offer" aria-labelledby="offerLabel" style="width: 495px;">
+    <button type="button" class="btn position-absolute" data-bs-dismiss="offcanvas" aria-label="Close" style="width: fit-content; height: fit-content; top: 12px; left: 12px; z-index: 999999;">
+        <img src="./assets/Close Black.svg" alt="Close" width="20px" height="20px">
+    </button>
+    <h3 class="fs-4" style="margin-top: 18px; margin-left: 64px;">Delivery Options</h3>
+    <section class="p-4 d-flex flex-column gap-2" style="margin-top: 56px;">
+        <button id="instant" class="p-3 rounded-2 d-flex gap-3 disabled-border-green bg-transparent" style="border: 1px solid #E5E9F0; cursor: pointer;" disabled>
+            <div class="h-100 d-flex align-items-center">
+                <img src="./assets/Instant Delivery.png" alt="Instant Delivery" width="32px" height="32px">
+            </div>
+            <div class="d-flex flex-column gap-2 align-items-start" style="flex: 1;">
+                <p class="fw-semibold p-0 m-0 lh-1 text-black">Instant</p>
+                <p class="p-0 m-0 lh-1 text-black-50 text-start"><%= language.instant %></p>
+            </div>
+            <span class="currency fw-semibold text-black"></span>
+        </button>
+        <button id="same-day" class="p-3 rounded-2 d-flex gap-3 disabled-border-green bg-transparent" style="border: 1px solid #E5E9F0; cursor: pointer;">
+            <div class="h-100 d-flex align-items-center">
+                <img src="./assets/Same Day Delivery.png" alt="Same Day Delivery" width="32px" height="32px">
+            </div>
+            <div class="d-flex flex-column gap-2 align-items-start" style="flex: 1;">
+                <p class="fw-semibold p-0 m-0 lh-1 text-black">Same Day</p>
+                <p class="p-0 m-0 lh-1 text-black-50 text-start"><%= language.same_day %></p>
+            </div>
+            <span class="currency fw-semibold text-black"></span>
+        </button>
+    </section>
+</aside> -->
+
+<!-- <script>
+    let deliveryCount = 1;
+
+function addDelivery() {
+    deliveryCount++;
+
+    const stepIndicator = document.getElementById('step-indicator');
+    stepIndicator.innerHTML += `<div class="text-black-50 fw-bold d-flex align-items-center justify-content-center" style="width: 20px; height: 20px;">${deliveryCount}</div>`;
+
+    const deliveryForms = document.getElementById('delivery-forms');
+    const addDeliveryButton = document.getElementById('add-delivery-button');
+
+    // Create a new section by copying the innerHTML of the first delivery section
+    const firstDeliverySection = deliveryForms.querySelector('.delivery-section');
+    const newSection = document.createElement('section');
+    newSection.className = 'delivery-section p-4 bg-white shadow-sm rounded mb-3';
+    newSection.innerHTML = `
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-semi-bold">Pengantaran ${deliveryCount}</h5>
+            <div class="d-flex align-items-center">
+                <button class="bg-transparent border-0" width="16px" height="16px" onClick="removeDelivery(this)">
+                    <img src="./assets/Trash.svg" alt="Trash Icon" style="width: 16px; height: 16px;">
+                </button>
+                <button class="bg-transparent border-0" width="16px" height="16px" onClick="addDelivery()">
+                    <img src="./assets/Copy.svg" alt="Copy Icon">
+                </button>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="form-label fw-semibold text-black-50">Rute Pengantaran</label>
+            <div class="mb-4 d-flex align-items-center gap-2">
+                <img src="./assets/Pickup Large.svg" alt="Pickup Location" width="24px" height="24px">
+                <input type="text" class="form-control" placeholder="Kirim dari..." style="cursor: pointer; background-color: #F6F8FB;" readonly>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <img src="./assets/Drop Off.svg" alt="Drop Off Location" width="24px" height="24px">
+                <input type="text" class="form-control" placeholder="Kirim ke..." style="cursor: pointer; background-color: #F6F8FB;" readonly>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="mb-3 form-label fw-semibold text-black-50">Detail item</label>
+            <img src="./assets/Small.png" alt="Small" height="148px">
+            <div class="d-flex gap-3 mt-3 flex-column-break">
+                <div class="d-flex justify-content-evenly" style="flex: 1;">
+                    <button class="border-0" style="width: 48px; height: 48px; border-radius: 50%; outline: none; background-color: #F7F9FC;">S</button>
+                    <button class="border-0" style="width: 48px; height: 48px; border-radius: 50%; outline: none; background-color: #F7F9FC;">M</button>
+                    <button class="border-0" style="width: 48px; height: 48px; border-radius: 50%; outline: none; background-color: #F7F9FC;">L</button>
+                </div>
+                <div class="form-control d-flex align-items-center" style="flex: 1; height: 48px; background-color: #F7F9FC;">
+                    <input type="number" placeholder="Berat barang (kg)" class="bg-transparent border-0" style="flex: 1; background-color: #F7F9FC; outline: none;">
+                    <span class="fw-semibold text-black-50">KG</span>
+                </div>
+                <select class="form-select text-black-50" style="flex: 1; background-color: #F7F9FC;">
+                    <option value="">Jenis barang (optional)</option>
+                    <option value="1" class="text-black">Dokumen</option>
+                    <option value="2" class="text-black">Makanan</option>
+                    <option value="3" class="text-black">Pakaian</option>
+                    <option value="4" class="text-black">Barang elektronik</option>
+                    <option value="5" class="text-black">Pecah belah</option>
+                    <option value="6" class="text-black">Obat obatan</option>
+                    <option value="7" class="text-black">Lainnya</option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="mb-4 form-label fw-semibold text-black-50">Opsi pengantaran</label>
+            <button class="btn btn-light d-block w-100 text-start">Pilih opsi pengantaran</button>
+            <div class="alert alert-warning mt-2" role="alert">No vehicle selected</div>
+        </div>
+        <div class="mb-4">
+            <label class="form-label">Detail pembayaran</label>
+            <input type="text" class="form-control mb-2" value="<%= rekening.Ovo.getSaldo() %>" readonly>
+            <input type="text" class="form-control mb-2" placeholder="Kode referensi (optional)">
+            <button class="btn btn-outline-primary w-100">Masukkan Promo</button>
+        </div>
+    `;
+    deliveryForms.insertBefore(newSection, addDeliveryButton);
+
+    // Update rincian harga
+    const priceDetails = document.getElementById('price-details');
+    const newPriceRow = document.createElement('div');
+    newPriceRow.className = 'd-flex justify-content-between';
+    newPriceRow.innerHTML = `<span>Pengantaran ${deliveryCount}</span><span>0</span>`;
+    priceDetails.appendChild(newPriceRow);
+
+    // Update tombol pesanan
+    const orderButton = document.getElementById('order-button');
+    orderButton.innerText = `Pesan ${deliveryCount} Pengantaran`;
+    orderButton.disabled = false;
+}
+</script> -->

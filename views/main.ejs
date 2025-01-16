@@ -1,0 +1,147 @@
+<%- layout("./boilerplate") %>
+
+<input id="geocoding_api" type="hidden" value="<%= geocoding_api %>">
+<input id="default_lat" type="hidden" value="<%= default_lat %>">
+<input id="default_long" type="hidden" value="<%= default_long %>">
+<input id="pickup_long" type="hidden" value="<%= firstOrder.pickup.long %>">
+<input id="pickup_lat" type="hidden" value="<%= firstOrder.pickup.lat %>">
+<input id="pickup_loc" type="hidden" value="<%= firstOrder.pickup.loc %>">
+<input id="destination_long" type="hidden" value="<%= firstOrder.destination.long %>">
+<input id="destination_lat" type="hidden" value="<%= firstOrder.destination.lat %>">
+<input id="destination_loc" type="hidden" value="<%= firstOrder.destination.loc %>">
+<input id="pickup_placeholder" type="hidden" value="<%= language.cari_placeholder %>">
+<input id="destination_placeholder" type="hidden" value="<%= language.tujuan_placeholder %>">
+<input id="delivery_option" type="hidden" value="<%= language.option %>">
+<input type="hidden" id="time_format" value="<%= language.time_format %>">
+
+<img id="layout-bg" src="./assets/Layout Background.png" alt="Layout Background" class="w-100 object-fit-cover object-pos" style="min-height: 300px; object-position: left;">
+
+<main id="layout" class="w-100 p-4 position-absolute top-0 start-50 translate-middle-x" style="max-width: 1240px;">
+    <%- include('header') %>
+
+    <section class="mt-5 d-flex justify-content-between align-items-end">
+        <span class="text-white fs-4 fw-semibold"><%= language.delivery %></span>
+        <!-- <button class="btn dropdown-toggle text-white fs-4 fw-semibold p-0 text-wrap text-start" id="kotaDropDown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: none;">
+            <%= language.delivery %> Medan
+        </button> -->
+        <div class="dropdown-menu overflow-auto no-scrollbar p-0" aria-labelledby="kotaDropDown" style="max-height: 256px;">
+            <% for (const kota in daftarKota) { %>
+                <p class="dropdown-item fs-5 fw-semibold my-1" onclick="pilihKota('<%= daftarKota[kota].nama %>', '<%= daftarKota[kota].long %>', '<%= daftarKota[kota].lat %>')" style="cursor: pointer;"><%= daftarKota[kota].nama %></p>
+            <% } %>
+        </div>
+        <a href="/pemesanan-ganda" class="text-white-50 fw-semibold text-decoration-none">
+            <img class="hide-breakpoint" src="./assets/Pemesanan Ganda.svg" alt="Pemesanan Ganda" width="16px" height="16px">
+            <%= language.multiple %>
+        </a>
+    </section>
+    <section id="search" class="w-100 h-25 p-3 d-flex align-items-center gap-2 bg-white mt-4 rounded-3" style="height: 64px; line-height: 64px;">
+        <div id="penjemputan-container" type="button" data-bs-toggle="offcanvas" data-bs-target="#maps" aria-controls="maps" class="maps-button ps-3 d-flex align-items-center gap-2 rounded-3" style="height: 64px; background-color: #f8f8f8 ; cursor: pointer; flex: 1;">
+            <img src="./assets/Pickup Small.svg" alt="Pickup" width="20px" height="20px">
+            <input id="penjemputan" type="text" placeholder="<%= language.from %>" value="<%= firstOrder.pickup.loc %>" class="w-100 black-placeholder bg-transparent border-0" style="outline: none; cursor: pointer;" readonly autocomplete="off">
+        </div>
+        <img id="swap" class="hide-breakpoint" src="./assets/Swap.png" alt="Swap" width="20px" height="20px" style="cursor: pointer;">
+        <div id="tujuan-container" type="button" data-bs-toggle="offcanvas" data-bs-target="#maps" aria-controls="maps" class="maps-button ps-3 d-flex align-items-center gap-2 rounded-3" style="height: 64px; background-color: #f8f8f8 ;cursor: pointer; flex: 1;">
+            <img src="./assets/Drop Off.svg" alt="Pickup" width="20px" height="20px">
+            <input id="tujuan" type="text" placeholder="<%= language.to %>" value="<%= firstOrder.destination.loc %>" class="w-100 black-placeholder bg-transparent border-0" style="outline: none; cursor: pointer;" readonly autocomplete="off">
+        </div>
+        <button id="delivery-options" type="button" data-bs-toggle="offcanvas" data-bs-target="#delivery-drawer" aria-controls="delivery-drawer" class="ps-3 d-flex align-items-center gap-2 rounded-3 border-0 disabled-not-allowed disabled-opacity-50" style="height: 64px; background-color: #f8f8f8; cursor: pointer; flex: 1;"
+        <% if (!firstOrder.pickup.long || !firstOrder.pickup.lat || !firstOrder.destination.long || !firstOrder.destination.lat) { %><%= "disabled" %><% } %>>
+            <img id="delivery-icon" src="./assets/<% if (firstOrder.delivery.option === 'instant') { %>Instant Delivery.png<% } else if (firstOrder.delivery.option === 'same_day') { %>Same Day Delivery.png<% } else { %>Delivery Option.svg<% } %>" alt="Delivery Option" width="32px" height="32px">
+            <span id="delivery-text"><% if (firstOrder.delivery.option === 'instant') { %>Instant<% } else if (firstOrder.delivery.option === 'same_day') { %>Same Day<% } else { %><%= language.option %>><% } %></span>
+        </button>
+        <button id ="pemesanan-ganda" class="ps-3 text-black-50 d-flex align-items-center justify-content-start rounded-3 hide-breakpoint disabled-button border-0" style="width: 180px; height: 64px; cursor: pointer; background-color: #1EBD60;" <% if (firstOrder.price === null) { %>disabled<% } %>>
+            <span class="d-flex flex-column text-white d-flex flex-column align-items-start gap-2">
+                <small class="p-0 m-0 lh-1" style="font-size: 0.9rem;"><%= language.price %></small>
+                <small id="price" class="currency p-0 m-0 lh-1 fs-6 fw-semibold"><%= firstOrder.price %></small>
+            </span>
+        </button>
+    </section>
+</main>
+
+<main id="layout" class="w-100 p-4 mx-auto" style="max-width: 1240px;">
+    <div class="d-flex align-items-center justify-content-between">
+        <h5><%= language.book_again %></h5>
+        <a href="/pemesanan" class="text-decoration-none" style="color: #3B92B5;"><%= language.view_all %></a>
+    </div>
+    <% for (const history of twoHistory) { %>
+        <div class="py-4 gap-4 d-flex text-start bg-transparent row-hover">
+            <div class="custom-time" style="flex: 1; padding-left: 24px;"><%= history.time %></div>
+            <div style="flex: 1;"><%= history.sender.name %></div>
+            <div style="flex: 1;"><%= history.recipient.name %></div>
+            <div class="hide-breakpoint" style="flex: 1;">
+                <% if (history.delivery.option === 'instant') { %>Instant<% } else { %>Same Day<% } %>
+                -
+                <% if (history.delivery.vehicle === 'bike') { %>Bike<% } else { %>Car<% } %>
+            </div>
+            <div class="currency" style="flex: 1;"><%= history.price %></div>
+            <% const status = [language.status, language.status_type1, language.status_type2, language.status_type3, language.status_type4] %>
+            <div class="hide-breakpoint status-<%= history.status %>" style="flex: 1;"><%= status[history.status + 1] %></div>
+        </div>
+    <% } %>
+    <% if (!twoHistory.length) { %>
+        <section class="w-100 h-25 p-3 d-flex align-items-center gap-2 bg-white mt-4 rounded-3" style="height: 64px; line-height: 64px; box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.08);">
+            <div class="mx-auto text-black-50 d-flex flex-column">
+                <img src="./assets/Envelop.png" alt="Envelop" width="48px" height="48px">
+                <small class="p-0 m-0 lh-1" style="color: #D6D6D6">No data</small>
+            </div>
+        </section>
+    <% } %>
+</main>
+
+<%- include('navbar') %>
+
+<aside class="offcanvas offcanvas-end" tabindex="-1" id="maps" aria-labelledby="mapsLabel" style="width: 495px;">
+    <button type="button" class="btn position-absolute" data-bs-dismiss="offcanvas" aria-label="Close" style="width: fit-content; height: fit-content; top: 12px; left: 12px; z-index: 999999;">
+        <img src="./assets/Close Black.svg" alt="Close" width="20px" height="20px">
+    </button>
+    <div class="h-100 d-flex flex-column justify-content-between">
+        <div>
+            <div class="w-100" id="map" style="height: 400px;"></div>
+            <div class="position-relative">
+                <div id="lokasi_container" class="w-100 px-4 position-absolute no-close" style="bottom: -16px; display: none; z-index: 1000;">
+                    <div id="list_lokasi" class="w-100 d-flex flex-column overflow-auto no-scrollbar py-2 rounded-2 no-close" style="box-shadow: 0 0 6px rgba(0, 0, 0, 0.2)">
+                        <!-- <span class="w-100 py-4 text-center text-black-50 bg-white">Tidak ada data</span> -->
+                    </div>
+                </div>
+                        <!-- <p class="dropdown-item fs-5 fw-semibold my-1" style="cursor: pointer;">nama</p> -->
+                </div>
+                <div class="position-relative p-4 no-close">
+                    <input type="text" class="w-100 border-0 no-close" id="cari" placeholder="<%= language.cari_placeholder %>" style="height: 62px; padding-left: 56px; background-color: #F6F8FB; outline: none;" autocomplete="off">
+                    <img id="cari-icon" src="./assets/Pickup Large.svg" alt="Search Icon" width="24px" height="24px" class="position-absolute top-50 translate-middle-y no-close" style="left: 40px;">
+                </div>
+            </div>
+        </div>
+        <div class="p-4">
+            <button data-bs-dismiss="offcanvas" aria-label="Close" class="rounded-2 text-white w-100" style="height: 56px; background-color: #00b14f; border-color: #00b14f; text-shadow: 0 -1px 0 rgba(0, 0, 0, .12); box-shadow: 0 2px 0 rgba(0, 0, 0, .045);">Confirm</button>
+        </div>
+    </div>
+</aside>
+
+<aside class="offcanvas offcanvas-end" tabindex="-1" id="delivery-drawer" aria-labelledby="deliveryOptionsLabel" style="width: 495px;">
+    <button type="button" class="btn position-absolute" data-bs-dismiss="offcanvas" aria-label="Close" style="width: fit-content; height: fit-content; top: 12px; left: 12px; z-index: 999999;">
+        <img src="./assets/Close Black.svg" alt="Close" width="20px" height="20px">
+    </button>
+    <h3 class="fs-4" style="margin-top: 18px; margin-left: 64px;"><%= language.delivery_opt %></h3>
+    <section class="p-4 d-flex flex-column gap-2" style="margin-top: 56px;">
+        <button id="instant" class="p-3 rounded-2 d-flex gap-3 disabled-border-green bg-transparent" style="border: 1px solid #E5E9F0; cursor: pointer;" <% if (firstOrder.delivery.option === 'instant') { %>disabled<% } %>>
+            <div class="h-100 d-flex align-items-center">
+                <img src="./assets/Instant Delivery.png" alt="Instant Delivery" width="32px" height="32px">
+            </div>
+            <div class="d-flex flex-column gap-2 align-items-start" style="flex: 1;">
+                <p class="fw-semibold p-0 m-0 lh-1 text-black">Instant</p>
+                <p class="p-0 m-0 lh-1 text-black-50 text-start"><%= language.instant %></p>
+            </div>
+            <span id="instant-price" class="currency fw-semibold text-black"><%= firstOrder.detail_price.instant[firstOrder.delivery.vehicle || 'bike'] %></span>
+        </button>
+        <button id="same-day" class="p-3 rounded-2 d-flex gap-3 disabled-border-green bg-transparent" style="border: 1px solid #E5E9F0; cursor: pointer;" <% if (firstOrder.delivery.option === 'same_day') { %>disabled<% } %>>
+            <div class="h-100 d-flex align-items-center">
+                <img src="./assets/Same Day Delivery.png" alt="Same Day Delivery" width="32px" height="32px">
+            </div>
+            <div class="d-flex flex-column gap-2 align-items-start" style="flex: 1;">
+                <p class="fw-semibold p-0 m-0 lh-1 text-black">Same Day</p>
+                <p class="p-0 m-0 lh-1 text-black-50 text-start"><%= language.same_day %></p>
+            </div>
+            <span id="same-day-price" class="currency fw-semibold text-black"><%= firstOrder.detail_price.same_day[firstOrder.delivery.vehicle || 'bike'] %></span>
+        </button>
+    </section>
+</aside>
