@@ -1,282 +1,10 @@
+const {db} = require('../models/database');
+
 const config = require('../config');
 const getDistance = require('../services/getDistance');
 const generateDriver = require('../services/generateDriver');
 const generateNoResi = require('../services/generateNoResi');
 const generateStatus = require('../services/generateStatus');
-const Rekening = require('./Rekening');
-
-const fakeData = [
-    {
-        pickup: {
-            long: '98.6779258',
-            lat: '3.5874245',
-            loc: 'Wi Motor, 41, Jalan Mesjid, Kesawan, Medan Barat, Kota Medan, Sumatera Utara, Sumatra, 20212, Indonesia',
-            detail: 'Bengkel Wi Motor'
-        },
-        destination: {
-            long: '98.6682164',
-            lat: '3.59275865',
-            loc: 'Daihatsu Medan, Jalan Jenderal Gatot Subroto, Petisah Tengah, Petisah, Medan Petisah, Kota Medan, Sumatera Utara, Sumatra, 20112, Indonesia',
-            detail: 'Capella Medan, titip ke security'
-        },
-        sender: {
-            name: 'Lyna',
-            phone: '082164524790'
-        },
-        recipient: {
-            name: 'Richardo Lieberio',
-            phone: '081918981214'
-        },
-        item: {
-            size: 's',
-            weight: '1',
-            type: 1
-        },
-        delivery: {
-            option: 'instant',
-            vehicle: 'bike',
-        },
-        payment: {
-            method: 2,
-            discount: null
-        },
-        distance: '2.82',
-        detail_price: {
-            instant: {
-                bike: '17600',
-                car: '31500'
-            },
-            same_day: {
-                bike: '12600',
-                car: '25500'
-            }
-        },
-        price: '17600',
-        status: 3,
-        driver: {
-            nama: 'Ferdy',
-            plat: 'BK 1412 KD',
-            rating: 4.4
-        },
-        time: 1731152398413,
-        no_resi: '8SDBWMN27EPA3J9EVVVA'
-    },
-    {
-        pickup: {
-            long: '98.6779258',
-            lat: '3.5874245',
-            loc: 'Wi Motor, 41, Jalan Mesjid, Kesawan, Medan Barat, Kota Medan, Sumatera Utara, Sumatra, 20212, Indonesia',
-            detail: 'Bengkel Wi Motor'
-        },
-        destination: {
-            long: '98.6682164',
-            lat: '3.59275865',
-            loc: 'Daihatsu Medan, Jalan Jenderal Gatot Subroto, Petisah Tengah, Petisah, Medan Petisah, Kota Medan, Sumatera Utara, Sumatra, 20112, Indonesia',
-            detail: 'Capella Medan, titip ke security'
-        },
-        sender: {
-            name: 'Lyna',
-            phone: '082164524790'
-        },
-        recipient: {
-            name: 'Richardo Lieberio',
-            phone: '081918981214'
-        },
-        item: {
-            size: 's',
-            weight: '1',
-            type: 1
-        },
-        delivery: {
-            option: 'instant',
-            vehicle: 'bike',
-        },
-        payment: {
-            method: 2,
-            discount: null
-        },
-        distance: '2.82',
-        detail_price: {
-            instant: {
-                bike: '17600',
-                car: '31500'
-            },
-            same_day: {
-                bike: '12600',
-                car: '25500'
-            }
-        },
-        price: '17600',
-        status: 2,
-        time: 1731152398413,
-        no_resi: 'C1G8LEHU2YCHZM8826E7'
-    },
-    {
-        pickup: {
-            long: '98.6779258',
-            lat: '3.5874245',
-            loc: 'Wi Motor, 41, Jalan Mesjid, Kesawan, Medan Barat, Kota Medan, Sumatera Utara, Sumatra, 20212, Indonesia',
-            detail: 'Bengkel Wi Motor'
-        },
-        destination: {
-            long: '98.6682164',
-            lat: '3.59275865',
-            loc: 'Daihatsu Medan, Jalan Jenderal Gatot Subroto, Petisah Tengah, Petisah, Medan Petisah, Kota Medan, Sumatera Utara, Sumatra, 20112, Indonesia',
-            detail: 'Capella Medan, titip ke security'
-        },
-        sender: {
-            name: 'Lyna',
-            phone: '082164524790'
-        },
-        recipient: {
-            name: 'Richardo Lieberio',
-            phone: '081918981214'
-        },
-        item: {
-            size: 's',
-            weight: '1',
-            type: 1
-        },
-        delivery: {
-            option: 'instant',
-            vehicle: 'bike',
-        },
-        payment: {
-            method: 2,
-            discount: null
-        },
-        distance: '2.82',
-        detail_price: {
-            instant: {
-                bike: '17600',
-                car: '31500'
-            },
-            same_day: {
-                bike: '12600',
-                car: '25500'
-            }
-        },
-        price: '17600',
-        status: 0,
-        driver: {
-            nama: 'Budi Yanto',
-            plat: 'BK 9912 LD',
-            rating: 4.9
-        },
-        time: 1731152398413,
-        no_resi: 'MDN6C591CJERQA1OUDWT'
-    },
-    {
-        pickup: {
-            long: '98.6865561',
-            lat: '3.5355179',
-            loc: 'Gang Sado, Suka Maju, Gedung Johor, Medan Johor, Kota Medan, Sumatera Utara, Sumatra, 20146, Indonesia',
-            detail: 'Komplek Sado Permai'
-        },
-        destination: {
-            long: '98.66648694451999',
-            lat: '3.5935493434311967',
-            loc: 'Jalan Rajak, Petisah Tengah, Petisah, Medan Petisah, City of Medan, North Sumatra, Sumatra, 20112, Indonesia',
-            detail: 'Tonspia'
-        },
-        sender: {
-            name: 'Lukas Lieberio',
-            phone: '082164524790'
-        },
-        recipient: {
-            name: 'Stefan',
-            phone: '081247881909'
-        },
-        item: {
-            size: 'm',
-            weight: '3',
-            type: 6
-        },
-        delivery: {
-            option: 'same_day',
-            vehicle: 'bike',
-        },
-        payment: {
-            method: 1,
-            discount: null
-        },
-        distance: '8.62',
-        detail_price: {
-            instant: {
-                bike: '32000',
-                car: '48900'
-            },
-            same_day: {
-                bike: '27000',
-                car: '42900'
-            }
-        },
-        price: '32000',
-        status: 1,
-        driver: {
-            nama: 'Bambang',
-            plat: 'BK 1924 AS',
-            rating: 4.1
-        },
-        time: 1731152398413,
-        no_resi: 'PSL5SUHW3DPLDCGOZ0G5'
-    },
-    {
-        pickup: {
-            long: '98.6865561',
-            lat: '3.5355179',
-            loc: 'Gang Sado, Suka Maju, Gedung Johor, Medan Johor, Kota Medan, Sumatera Utara, Sumatra, 20146, Indonesia',
-            detail: 'Komplek Sado Permai'
-        },
-        destination: {
-            long: '98.66648694451999',
-            lat: '3.5935493434311967',
-            loc: 'Jalan Rajak, Petisah Tengah, Petisah, Medan Petisah, City of Medan, North Sumatra, Sumatra, 20112, Indonesia',
-            detail: 'Tonspia'
-        },
-        sender: {
-            name: 'Lukas Lieberio',
-            phone: '082164524790'
-        },
-        recipient: {
-            name: 'Stefan',
-            phone: '081247881909'
-        },
-        item: {
-            size: 'm',
-            weight: '3',
-            type: 6
-        },
-        delivery: {
-            option: 'same_day',
-            vehicle: 'bike',
-        },
-        payment: {
-            method: 1,
-            discount: null
-        },
-        distance: '8.62',
-        detail_price: {
-            instant: {
-                bike: '32000',
-                car: '48900'
-            },
-            same_day: {
-                bike: '27000',
-                car: '42900'
-            }
-        },
-        price: '32000',
-        status: 0,
-        driver: {
-            nama: 'Bagus',
-            plat: 'BK 4511 FS',
-            rating: 4.7
-        },
-        time: 1731152398413,
-        no_resi: '5QFO8E9APRU3KIUI1YJV'
-    }
-];
 
 class Pesanan {
     constructor() {
@@ -328,9 +56,6 @@ class Pesanan {
             price: null
         };
         this.pesanan = [structuredClone(this.format)];
-        this.history = [];
-        this.status = ['Selesai', 'Dibatalkan', 'Tidak ada pengemudi', 'Dikembalikan'];
-        this.orders = [];
     }
 
     getFirstOrder() {
@@ -449,46 +174,95 @@ class Pesanan {
         return false;
     }
 
-    async order() {
-        let totalOvo = 0;
-        let totalMastercard = 0;
-        let totalVisa = 0;
-        for(const order of this.pesanan) {
-            if (order.payment.method === 0) totalOvo += parseInt(order.price);
-            if (order.payment.method === 1) totalMastercard += parseInt(order.price);
-            if (order.payment.method === 2) totalVisa += parseInt(order.price);
-        }
-        const error = {};
-        try {
-            Rekening.Ovo.withdraw(totalOvo);
-        } catch(err) {
-            error.ovo = true;
-        }
-        try {
-            Rekening.Mastercard.withdraw(totalMastercard);
-        } catch(err) {
-            error.mastercard = true;
-        }
-        try {
-            Rekening.Visa.withdraw(totalVisa);
-        } catch(err) {
-            error.visa = true;
-        }
+    async order(user_id) {
+        return new Promise((resolve, reject) => {
+            const total = [{total: 0}, {total: 0}, {total: 0}, {total: null}, {total: null}];
 
-        if (!(error.ovo || error.mastercard || error.visa)) {
-            const drivers = await generateDriver(this.pesanan.length);
-            this.pesanan.forEach((pesanan, index) => {
-                const no_resi = generateNoResi();
-                const status = generateStatus();
-                this.orders.push({...pesanan, status, driver: drivers[index], time: Date.now(), no_resi});
-            })
-            this.pesanan = [structuredClone(this.format)];
-        }
-        return error;
+            for(const order of this.pesanan) {
+                total[order.payment.method].total += parseInt(order.price);
+            }
+
+            const error = {};
+            const query = `
+                SELECT user_payments.id, user_payments.amount, user_payments.payment_id, payments.name
+                FROM user_payments
+                JOIN payments ON user_payments.payment_id = payments.id
+                WHERE user_payments.user_id = ?
+            `;
+
+            db.query(query, [user_id], (err, results) => {
+                if (err) {
+                    console.error(err);
+                    return resolve(500);
+                }
+
+                results.forEach((result) => {
+                    total[result.payment_id - 1].id = result.id;
+                    console.log(total[result.payment_id - 1].total);
+                    if (total[result.payment_id - 1].total !== null) {
+                        console.log('Hello');
+                        total[result.payment_id - 1].total = result.amount - total[result.payment_id - 1].total;
+                        if (total[result.payment_id - 1].total < 0) error[result.name.toLowerCase()] = true;
+                    }
+                });
+
+                console.log(error);
+
+                if (!Object.keys(error).length) {
+                    total.forEach(({id, total}) => {
+                        if (total !== null) {
+                            db.query('UPDATE user_payments SET amount = ? WHERE id = ?' , [total, id], (err, _) => {
+                                if (err) console.error(err);
+                            });
+                        }
+                    });
+
+
+                    const details = `
+                        INSERT INTO order_details
+                            (pickup_lat, pickup_long, pickup_loc, pickup_detail, destination_lat, destination_long, destination_loc, destination_detail, sender_name, sender_phone, recipient_name, recipient_phone)
+                            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `;
+                    const orders = `
+                        INSERT INTO orders
+                            (no_resi, user_id, user_payment_id, order_detail_id, item_size, item_weight, item_type, delivery_option, delivery_vehicle, distance, price)
+                            values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `;
+
+                    this.pesanan.forEach((pesanan) => {
+                        const data = [
+                            pesanan.pickup.lat, pesanan.pickup.long, pesanan.pickup.loc, pesanan.pickup.detail,
+                            pesanan.destination.lat, pesanan.destination.long, pesanan.destination.loc, pesanan.destination.detail,
+                            pesanan.sender.name, pesanan.sender.phone, pesanan.recipient.name, pesanan.recipient.phone,
+                        ];
+                        db.query(details, data, (err, result) => {
+                            if (err) {
+                                console.error(err);
+                            } else {
+                                const data = [
+                                    generateNoResi(), user_id, total[pesanan.payment.method].id, result.insertId,
+                                    pesanan.item.size, pesanan.item.weight, pesanan.item.type,
+                                    pesanan.delivery.option, pesanan.delivery.vehicle,
+                                    pesanan.distance, pesanan.price
+                                ];
+                                db.query(orders, data, (err) => {
+                                    if (err) {
+                                        console.error(err);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+
+                this.clearPesanan();
+                resolve(error);
+            });
+        });
     }
 
-    getTwoHistory() {
-        return this.orders.slice(0, 2);
+    clearPesanan() {
+        this.pesanan = [structuredClone(this.format)];
     }
 }
 

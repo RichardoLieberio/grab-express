@@ -824,6 +824,9 @@ async function submit() {
             method: 'POST'
         });
         const data = await response.json();
+
+        if (!data.success) return alert(data.message);
+
         if (data.error.ovo || data.error.mastercard || data.error.visa) {
             document.querySelectorAll('.delivery-section').forEach(e => {
                 const method = Array.from(e.querySelectorAll('.payment')).indexOf(e.querySelector('.payment.s-selected'));

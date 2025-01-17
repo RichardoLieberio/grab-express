@@ -74,8 +74,8 @@
                 <% if (history.delivery.vehicle === 'bike') { %>Bike<% } else { %>Car<% } %>
             </div>
             <div class="currency" style="flex: 1;"><%= history.price %></div>
-            <% const status = [language.status, language.status_type1, language.status_type2, language.status_type3, language.status_type4] %>
-            <div class="hide-breakpoint status-<%= history.status %>" style="flex: 1;"><%= status[history.status + 1] %></div>
+            <% const status = [language.status_type1, language.status_type2, language.status_type3, language.status_type4, language.status_type4] %>
+            <div class="hide-breakpoint status-<%= history.status %>" style="flex: 1;"><%= status[history.status] %></div>
         </div>
     <% } %>
     <% if (!twoHistory.length) { %>

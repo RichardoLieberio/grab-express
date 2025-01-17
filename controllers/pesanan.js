@@ -1,12 +1,31 @@
+const {db} = require('../models/database');
 const Pesanan = require('../models/Pesanan');
 
 function getOrder(req, res) {
-    res.json({success: true, data: Pesanan.orders});
+    const query = `
+        SELECT drivers.*, users.name AS driver_name, users.email AS driver_email, users.phone AS driver_phone, user_payments.payment_id, payments.name AS payment_name, payments.path AS payment_path, order_details.*, orders.*
+        FROM orders
+        LEFT JOIN drivers ON orders.driver_id = drivers.id
+        LEFT JOIN users ON drivers.user_id = users.id
+        JOIN user_payments ON orders.user_payment_id = user_payments.id
+        JOIN payments ON user_payments.payment_id = payments.id
+        JOIN order_details ON orders.order_detail_id = order_details.id
+        WHERE orders.user_id = ?
+    `;
+
+    db.query(query, [req.user.id], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.json({success: false, message: 'Failed to fetch orders'});
+        } else {
+            res.json({success: true, data: result});
+        }
+    })
 }
 
 async function order(req, res) {
-    const error = await Pesanan.order();
-    res.json({success: true, error});
+    const error = await Pesanan.order(req.user.id);
+    error === 500 ? res.json({success: false, message: 'Database error'}) : res.json({success: true, error});
 }
 
 function updateWholePesanan(req, res) {

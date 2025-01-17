@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../config');
 const {db} = require('../models/database');
-const rekening = require('../models/Rekening');
 const Pesanan = require('../models/Pesanan');
 
 const daftar_bahasa = require('../data/daftar_bahasa');
@@ -138,10 +137,8 @@ function renderMain(req, res) {
         default_lat: config.default_lat,
         default_long: config.default_long,
         firstOrder: Pesanan.getFirstOrder(),
-        twoHistory: Pesanan.getTwoHistory(),
+        twoHistory: [], // Ini diedit
         user: req.user
-        // instantPrice: Pesanan.getEstPrice(1, 'instant'),
-        // sameDayPrice: Pesanan.getEstPrice(1, 'same_day')
     };
     res.render('main', {title: 'Home Page', css: 'main.css', js: 'main.js', ...options});
 }
@@ -155,14 +152,14 @@ function renderPemesananGanda(req, res) {
     const language = config.language === 'en' ? daftar_bahasa.en : daftar_bahasa.id;
     const options = {
         language,
-        rekening,
         geocoding_api: config.geocoding_api,
         default_lat: config.default_lat,
         default_long: config.default_long,
         allOrder: Pesanan.pesanan,
         max_weight: config.max_weight,
         disableTotal: Pesanan.disableTotal(),
-        user: req.user
+        user: req.user,
+        payments: req.userPayments
     }
     res.render('pemesanan-ganda', {title: 'Pemesanan Ganda', css: 'pemesanan-ganda.css', js: 'pemesanan-ganda.js', ...options});
 }
@@ -174,6 +171,7 @@ function renderDashboard(req, res) {
 }
 
 function logout(req, res) {
+    Pesanan.clearPesanan();
     res.clearCookie('auth');
     res.json({status: 200, message: 'You have logged out'});
 }

@@ -65,7 +65,7 @@ function createTable() {
                 id INT(11) AUTO_INCREMENT PRIMARY KEY,
                 user_id INT(11) NOT NULL,
                 payment_id INT(11) NOT NULL,
-                amount DECIMAL(11, 2),
+                amount INT(8),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (payment_id) REFERENCES payments(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -88,7 +88,7 @@ function createTable() {
             `CREATE TABLE IF NOT EXISTS orders (
                 no_resi CHAR(20) PRIMARY KEY,
                 user_id INT(11) NOT NULL,
-                driver_id INT(11) NOT NULL,
+                driver_id INT(11) DEFAULT NULL,
                 user_payment_id INT(11) NOT NULL,
                 order_detail_id INT(11) NOT NULL,
                 item_size ENUM("s", "m", "l") NOT NULL,
@@ -97,11 +97,12 @@ function createTable() {
                 delivery_option ENUM("instant", "same_day") NOT NULL,
                 delivery_vehicle ENUM("bike", "car") NOT NULL,
                 distance DECIMAL(6, 2) NOT NULL,
-                price DECIMAL(11, 2) NOT NULL,
-                status INT(1) NOT NULL,
-                time TIMESTAMP NOT NULL,
+                price INT(8) NOT NULL,
+                status INT(1) NOT NULL DEFAULT 4,
+                finished_at TIMESTAMP NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-                FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE ON UPDATE CASCADE,
+                FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE SET NULL ON UPDATE CASCADE,
                 FOREIGN KEY (user_payment_id) REFERENCES user_payments(id) ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (order_detail_id) REFERENCES order_details(id) ON DELETE CASCADE ON UPDATE CASCADE
             )`
@@ -164,8 +165,8 @@ function seedPayment() {
             {name: 'Ovo', path: 'Ovo.svg'},
             {name: 'Mastercard', path: 'Mastercard.svg'},
             {name: 'Visa', path: 'Visa.png'},
-            {name: 'Sender', path: 'Cash.svg'},
-            {name: 'Recipient', path: 'Cash.svg'}
+            {name: 'Recipient', path: 'Cash.svg'},
+            {name: 'Sender', path: 'Cash.svg'}
         ];
         let completed = 0;
 

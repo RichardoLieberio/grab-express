@@ -2,6 +2,7 @@ const timeFormat = document.getElementById('time_format').value;
 const listStatus = document.getElementById('status').value.split(';;');
 const allSize = document.getElementById('all_size').value.split(';;');
 const allType = document.getElementById('all_type').value.split(';;');
+const cash = document.getElementById('cash').value.split(';;');
 
 const history = document.getElementById('history');
 const filterBtn = document.getElementById('filter-button');
@@ -12,6 +13,7 @@ const detail = document.getElementById('detail');
 const statusIcon = document.getElementById('status-icon');
 const statusText = document.getElementById('status-text');
 const time = document.getElementById('time');
+const driverProfile = document.getElementById('driver-profile');
 const driverName = document.getElementById('driver-name');
 const driverPlat = document.getElementById('driver-plat');
 const driverRating = document.getElementById('driver-rating');
@@ -27,6 +29,9 @@ const nomorPenerima = document.getElementById('nomor-penerima');
 const size = document.getElementById('size');
 const weight = document.getElementById('weight');
 const type = document.getElementById('type');
+const paymentImage = document.getElementById('payment-image');
+const paymentMethod = document.getElementById('payment-method');
+const paymentAmount = document.getElementById('payment-amount');
 
 let rawData;
 
@@ -83,9 +88,13 @@ filter.forEach(element => element.addEventListener('click', function(e) {
 
 async function getData() {
     const response = await fetch('/api/pesanan');
-    const {data} = await response.json();
-    rawData = data;
-    generateHistory(data);
+    const result = await response.json();
+    if (result.success) {
+        rawData = result.data;
+        generateHistory(result.data);
+    } else {
+        alert(result.message);
+    }
 }
 
 function rerenderHistory(status) {
@@ -110,15 +119,15 @@ function generateHistory(data) {
 }
 
 function createRow(data, i) {
-    const time = formatTime(data.time);
-    const option = data.delivery.option === 'same_day' ? 'Same Day' : 'Instant';
-    const vehicle = data.delivery.vehicle === 'car' ? 'Car' : 'Bike';
+    const time = formatTime(data.created_at);
+    const option = data.delivery_option === 'instant' ? 'Instant' : 'Same Day';
+    const vehicle = data.delivery_vehicle === 'car' ? 'Car' : 'Bike';
 
     return `
         <div id="${i}" class="history-row py-4 gap-4 d-flex text-start row-hover" type="button" data-bs-toggle="modal" data-bs-target="#detail">
             <div style="flex: 1; padding-left: 24px;">${time}</div>
-            <div style="flex: 1;">${data.sender.name}</div>
-            <div style="flex: 1;">${data.recipient.name}</div>
+            <div style="flex: 1;">${data.sender_name}</div>
+            <div style="flex: 1;">${data.recipient_name}</div>
             <div class="hide-breakpoint" style="flex: 1;">${option} - ${vehicle}</div>
             <div style="flex: 1;">${formatToRupiah(data.price)}</div>
             <div class="hide-breakpoint" style="flex: 1;">
@@ -161,49 +170,54 @@ function changeMap(e) {
     const data = rawData[index];
     changeMapSetting(index);
 
-    const iconPath = ['./assets/Success.png', './assets/Error.png', './assets/Warning.png', './assets/Info.png'];
+    const iconPath = ['./assets/Success.png', './assets/Error.png', './assets/Error.png', './assets/Warning.png', './assets/Info.png'];
     statusIcon.src = iconPath[data.status];
     statusText.textContent = listStatus[data.status + 1];
-    time.textContent = formatTime(data.time);
+    time.textContent = formatTime(data.created_at);
 
-    driverName.textContent = data.driver.nama;
-    driverPlat.textContent = data.driver.plat;
-    driverRating.textContent = data.driver.rating;
+    data.driver_id ? driverProfile.classList.remove('d-none') : driverProfile.classList.add('d-none');
+    driverName.textContent = data.driver_nama ?? '-';
+    driverPlat.textContent = data.plat ?? '-';
+    driverRating.textContent = data.rating ?? '-';
 
     resi.textContent = data.no_resi;
-    alamatPengirim.textContent = data.pickup.loc;
-    alamatPenerima.textContent = data.destination.loc;
+    alamatPengirim.textContent = data.pickup_loc;
+    alamatPenerima.textContent = data.destination_loc;
 
-    catatanPengirim.textContent = data.pickup.detail || '-';
-    namaPengirim.textContent = data.sender.name;
-    nomorPengirim.textContent = `(${data.sender.phone})`;
+    catatanPengirim.textContent = data.pickup_detail || '-';
+    namaPengirim.textContent = data.sender_name;
+    nomorPengirim.textContent = `(${data.sender_phone})`;
 
-    catatanPenerima.textContent = data.destination.detail || '-';
-    namaPenerima.textContent = data.recipient.name;
-    nomorPenerima.textContent = `(${data.recipient.phone})`;
+    catatanPenerima.textContent = data.destination_detail || '-';
+    namaPenerima.textContent = data.recipient_name;
+    nomorPenerima.textContent = `(${data.recipient_phone})`;
 
-    size.textContent = data.item.size === 's' ? allSize[0] : data.item.size === 'm' ? allSize[1] : allSize[2];
-    weight.textContent = data.item.weight;
-    type.textContent = allType[data.item.type];
+    size.textContent = data.item_size === 's' ? allSize[0] : data.item_size === 'm' ? allSize[1] : allSize[2];
+    weight.textContent = data.item_weight;
+    type.textContent = allType[data.item_type];
+
+    paymentImage.src = './assets/' + data.payment_path;
+    paymentImage.alt = data.payment_name;
+    paymentMethod.textContent = data.payment_name === 'Recipient' ? cash[1] : data.payment_name === 'Sender' ? cash[0] : data.payment_name;
+    paymentAmount.textContent = formatToRupiah(data.price);
 }
 
 function changeMapSetting(index) {
-    const pickup = rawData[index].pickup;
-    const destination = rawData[index].destination;
+    const data = rawData[index];
 
-    pickupMarker.setLatLng([+pickup.lat, +pickup.long]);
+    pickupMarker.setLatLng([+data.pickup_lat, +data.pickup_long]);
     pickupMarker.addTo(map);
-    destinationMarker.setLatLng([+destination.lat, +destination.long]);
+    destinationMarker.setLatLng([+data.destination_lat, +data.destination_long]);
     destinationMarker.addTo(map);
 
     routing.setWaypoints([
-        L.latLng(+pickup.lat, +pickup.long),
-        L.latLng(+destination.lat, +destination.long)
+        L.latLng(+data.pickup_lat, +data.pickup_long),
+        L.latLng(+data.destination_lat, +data.destination_long)
     ]);
 
     const bounds = L.latLngBounds(
-        L.latLng(+pickup.lat, +pickup.long),
-        L.latLng(+destination.lat, +destination.long)
+        L.latLng(+data.pickup_lat, +data.pickup_long),
+        L.latLng(+data.destination_lat, +data.destination_long)
     );
 
     map.fitBounds(bounds, {padding: [50, 50]});

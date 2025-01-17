@@ -36,11 +36,15 @@
 }
 
 .status-2 {
-    background-color: #fdf4e5;
+    background-color: #fdedec;
 }
 
 .status-3 {
     background-color: #e5f1fd;
+}
+
+.status-4 {
+    background-color: #fdf4e5;
 }
 
 div.leaflet-top.leaflet-right{
