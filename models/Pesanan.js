@@ -179,7 +179,9 @@ class Pesanan {
             const total = [{total: 0}, {total: 0}, {total: 0}, {total: null}, {total: null}];
 
             for(const order of this.pesanan) {
-                total[order.payment.method].total += parseInt(order.price);
+                if (order.payment.method !== 3 && order.payment.method !== 4) {
+                    total[order.payment.method].total += parseInt(order.price);
+                }
             }
 
             const error = {};
@@ -198,15 +200,11 @@ class Pesanan {
 
                 results.forEach((result) => {
                     total[result.payment_id - 1].id = result.id;
-                    console.log(total[result.payment_id - 1].total);
                     if (total[result.payment_id - 1].total !== null) {
-                        console.log('Hello');
                         total[result.payment_id - 1].total = result.amount - total[result.payment_id - 1].total;
                         if (total[result.payment_id - 1].total < 0) error[result.name.toLowerCase()] = true;
                     }
                 });
-
-                console.log(error);
 
                 if (!Object.keys(error).length) {
                     total.forEach(({id, total}) => {
@@ -216,7 +214,6 @@ class Pesanan {
                             });
                         }
                     });
-
 
                     const details = `
                         INSERT INTO order_details
@@ -229,6 +226,9 @@ class Pesanan {
                             values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `;
 
+                    let completed = 0;
+                    const datas = [];
+
                     this.pesanan.forEach((pesanan) => {
                         const data = [
                             pesanan.pickup.lat, pesanan.pickup.long, pesanan.pickup.loc, pesanan.pickup.detail,
@@ -239,8 +239,10 @@ class Pesanan {
                             if (err) {
                                 console.error(err);
                             } else {
+                                const no_resi = generateNoResi();
+                                datas.push(no_resi);
                                 const data = [
-                                    generateNoResi(), user_id, total[pesanan.payment.method].id, result.insertId,
+                                    no_resi, user_id, total[pesanan.payment.method].id, result.insertId,
                                     pesanan.item.size, pesanan.item.weight, pesanan.item.type,
                                     pesanan.delivery.option, pesanan.delivery.vehicle,
                                     pesanan.distance, pesanan.price
@@ -248,15 +250,19 @@ class Pesanan {
                                 db.query(orders, data, (err) => {
                                     if (err) {
                                         console.error(err);
+                                    } else if (++completed === this.pesanan.length) {
+                                        this.clearPesanan();
+                                        resolve({success: true, data: datas});
                                     }
                                 });
                             }
                         });
                     });
+                } else {
+                    this.clearPesanan();
+                    resolve({success: false, error});
                 }
 
-                this.clearPesanan();
-                resolve(error);
             });
         });
     }

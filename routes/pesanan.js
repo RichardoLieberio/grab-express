@@ -13,6 +13,7 @@ routes.get('/', controller.getOrder);
 routes.post('/', controller.order);
 routes.put('/', controller.updateWholePesanan);
 routes.patch('/', controller.updatePesanan);
+routes.get('/orders', controller.getOrders);
 routes.patch('/swap', controller.swapPesanan);
 routes.patch('/delivery', controller.delivery);
 

@@ -47,6 +47,10 @@
     background-color: #fdf4e5;
 }
 
+.status-5 {
+    background-color: #fdf4e5;
+}
+
 div.leaflet-top.leaflet-right{
     display: none !important;
     width: 0px !important;

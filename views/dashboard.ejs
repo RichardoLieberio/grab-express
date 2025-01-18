@@ -1,5 +1,12 @@
 <%- layout("./boilerplate") %>
 
+<input type="hidden" id="time_format" value="<%= language.time_format %>">
+<input type="hidden" id="status" value="<%= language.status %>;;<%= language.status_type1 %>;;<%= language.status_type2 %>;;<%= language.status_type3 %>;;<%= language.status_type4 %>;;<%= language.status_type5 %>;;<%= language.status_type6 %>">
+<input type="hidden" id="all_size" value="<%= language.size_s %>;;<%= language.size_m %>;;<%= language.size_l %>">
+<input type="hidden" id="cash" value="<%= language.cash_sender %>;;<%= language.cash_recipient %>">
+<input id="all_type" type="hidden" value="<%= language.pg_jenis_barang1 %>;;<%= language.pg_jenis_barang2 %>;;<%= language.pg_jenis_barang3 %>;;<%= language.pg_jenis_barang4 %>;;<%= language.pg_jenis_barang5 %>;;<%= language.pg_jenis_barang6 %>;;<%= language.pg_jenis_barang7 %>">
+<input id="no_resi" type="hidden" value="">
+
 <img id="layout-bg" src="./assets/Layout Background.png" alt="Layout Background" class="w-100 object-fit-cover object-pos" style="min-height: 300px; object-position: left;">
 
 <main id="layout" class="w-100 p-4 position-absolute top-0 start-50 translate-middle-x" style="max-width: 1240px;">
@@ -31,5 +38,102 @@
         </table>
     </section>
 </main>
+
+<div class="modal fade" id="detail" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg w-auto" style="max-width: 90vw; min-width: 500px;">
+        <div class="modal-content">
+            <div class="modal-body d-flex flex-column-break gap-4">
+                <div id="map" class="custom-margin" style="max-width: 450px; min-width: 450px; height: 450px"></div>
+                <div class="m-4 custom-margin custom-width d-flex flex-column justify-content-between align-items-end gap-5">
+                    <div class="d-flex flex-column gap-5">
+                        <div class="d-flex justify-content-between gap-5">
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="./assets/Info.png" alt="Icon" width="24px" height="24px">
+                                <div class="d-flex flex-column">
+                                    <span id="status-text" class="d-inline-block"><%= language.status_type5 %></span>
+                                    <small id="time" class="d-inline-block">09 Nov, 06:39 PM</small>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button id="cancel" type="button" class="btn btn-secondary" style="width: 100px; border: 1px solid #00b14f; outline: none; border: none;">Cancel</button>
+                                <button id="approve" type="button" class="btn btn-secondary" style="width: 100px; background-color: #00b14f; outline: none; border: none;">Approve</button>
+                            </div>
+                        </div>
+                        <div>
+                            <span><%= language.receipt %> <span class="fw-semibold" id="resi"></span></span>
+                            <div class="d-flex gap-4 mt-2">
+                                <div class="d-flex gap-2" style="flex: 1;">
+                                    <img src="./assets/Pickup Small.svg" alt="Pickup" width="24px" height="24px">
+                                    <div class="d-flex flex-column gap-3">
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.alamat_pengirim %></span>
+                                            <small id="alamat-pengirim"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.note %></span>
+                                            <small id="catatan-pengirim"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span>
+                                                <span id="nama-pengirim"></span> <span id="nomor-pengirim"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2" style="flex: 1;">
+                                    <img src="./assets/Drop Off.svg" alt="Drop Off" width="24px" height="24px">
+                                    <div class="d-flex flex-column gap-3">
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.alamat_penerima %></span>
+                                            <small id="alamat-penerima"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span><%= language.note %></span>
+                                            <small id="catatan-penerima"></small>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span>
+                                                <span id="nama-penerima"></span> <span id="nomor-penerima"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-4 mt-2">
+                            <div style="flex: 1">
+                                <span><%= language.pg_delivery %></span>
+                                <div class="d-flex flex-column gap-2 ps-4 mt-2">
+                                    <span>
+                                        <%= language.size %> : <span id="size"></span>
+                                    </span>
+                                    <span>
+                                        <%= language.weight %> : <span id="weight"></span> kg
+                                    </span>
+                                    <span>
+                                        <%= language.type %> : <span id="type"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="flex: 1">
+                                <span><%= language.metode_pembayaran %></span>
+                                <div class="d-flex gap-2" style="flex: 1;">
+                                    <img id="payment-image" src="" alt="" width="36px" height="36px">
+                                    <div class="d-flex flex-column">
+                                        <span id="payment-method"></span>
+                                        <small id="payment-amount"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width: 200px; background-color: #00b14f; outline: none; border: none;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
 
 <%- include('navbar') %>

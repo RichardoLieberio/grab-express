@@ -170,7 +170,7 @@ function changeMap(e) {
     const data = rawData[index];
     changeMapSetting(index);
 
-    const iconPath = ['./assets/Success.png', './assets/Error.png', './assets/Error.png', './assets/Warning.png', './assets/Info.png'];
+    const iconPath = ['./assets/Success.png', './assets/Error.png', './assets/Error.png', './assets/Warning.png', './assets/Info.png', './assets/Info.png'];
     statusIcon.src = iconPath[data.status];
     statusText.textContent = listStatus[data.status + 1];
     time.textContent = formatTime(data.created_at);
