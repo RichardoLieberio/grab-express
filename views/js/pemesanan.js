@@ -32,8 +32,10 @@ const type = document.getElementById('type');
 const paymentImage = document.getElementById('payment-image');
 const paymentMethod = document.getElementById('payment-method');
 const paymentAmount = document.getElementById('payment-amount');
+const cancel = document.getElementById('cancel');
 
 let rawData;
+let saveNoResi;
 
 const map = L.map('map', {zoomControl: false}).setView([3.5935493434311967, 98.66648694451999], 13);
 
@@ -86,6 +88,22 @@ filter.forEach(element => element.addEventListener('click', function(e) {
     rerenderHistory(status);
 }));
 
+cancel.addEventListener('click', async function(e) {
+    const response = await fetch('/api/pesanan/cancel/' + saveNoResi, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'}
+    });
+    const result = await response.json();
+    if (result.success) {
+        rawData = rawData.map(data => data.no_resi === result.no_resi ? {...data, status: 1} : data);
+        const status = Array.from(filter).findIndex(el => el.classList.contains('s-selected'));
+        rerenderHistory(status);
+        changeMap(null, result.no_resi);
+    } else {
+        alert(result.message);
+    }
+});
+
 async function getData() {
     const response = await fetch('/api/pesanan');
     const result = await response.json();
@@ -108,7 +126,7 @@ function generateHistory(data) {
     if (data.length) {
         noData.classList.add('d-none');
         data.forEach((d, i) => {
-            const row = createRow(d, i);
+            const row = createRow(d);
             history.innerHTML += row;
         });
     } else {
@@ -118,13 +136,13 @@ function generateHistory(data) {
     rebindUI();
 }
 
-function createRow(data, i) {
+function createRow(data) {
     const time = formatTime(data.created_at);
     const option = data.delivery_option === 'instant' ? 'Instant' : 'Same Day';
     const vehicle = data.delivery_vehicle === 'car' ? 'Car' : 'Bike';
 
     return `
-        <div id="${i}" class="history-row py-4 gap-4 d-flex text-start row-hover" type="button" data-bs-toggle="modal" data-bs-target="#detail">
+        <div id="${data.no_resi}" class="history-row py-4 gap-4 d-flex text-start row-hover" type="button" data-bs-toggle="modal" data-bs-target="#detail">
             <div style="flex: 1; padding-left: 24px;">${time}</div>
             <div style="flex: 1;">${data.sender_name}</div>
             <div style="flex: 1;">${data.recipient_name}</div>
@@ -165,12 +183,17 @@ function getParentId(e) {
     return getParentId(e.parentElement);
 }
 
-function changeMap(e) {
-    const index = getParentId(e.target);
-    const data = rawData[index];
-    changeMapSetting(index);
+function changeMap(e=null, no_resi=null) {
+    no_resi ??= getParentId(e.target);
+    saveNoResi = no_resi;
+    const data = rawData.filter(data => data.no_resi === no_resi)[0];
+    changeMapSetting(data);
 
-    const iconPath = ['./assets/Success.png', './assets/Error.png', './assets/Error.png', './assets/Warning.png', './assets/Info.png', './assets/Info.png'];
+    data.status === 3
+    ? cancel.classList.remove('d-none')
+    : cancel.classList.add('d-none');
+
+    const iconPath = ['./assets/Success.png', './assets/Error.png', './assets/Warning.png', './assets/Info.png', './assets/Info.png'];
     statusIcon.src = iconPath[data.status];
     statusText.textContent = listStatus[data.status + 1];
     time.textContent = formatTime(data.created_at);
@@ -202,9 +225,7 @@ function changeMap(e) {
     paymentAmount.textContent = formatToRupiah(data.price);
 }
 
-function changeMapSetting(index) {
-    const data = rawData[index];
-
+function changeMapSetting(data) {
     pickupMarker.setLatLng([+data.pickup_lat, +data.pickup_long]);
     pickupMarker.addTo(map);
     destinationMarker.setLatLng([+data.destination_lat, +data.destination_long]);

@@ -98,7 +98,7 @@ function createTable() {
                 delivery_vehicle ENUM("bike", "car") NOT NULL,
                 distance DECIMAL(6, 2) NOT NULL,
                 price INT(8) NOT NULL,
-                status INT(1) NOT NULL DEFAULT 4,
+                status INT(1) NOT NULL DEFAULT 3,
                 finished_at TIMESTAMP NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,

@@ -13,6 +13,7 @@ const noData = document.getElementById('no-data');
 const detail = document.getElementById('detail');
 
 const noResi = document.getElementById('no_resi');
+const icon = document.getElementById('icon');
 const statusText = document.getElementById('status-text');
 const time = document.getElementById('time');
 const resi = document.getElementById('resi');
@@ -30,6 +31,8 @@ const type = document.getElementById('type');
 const paymentImage = document.getElementById('payment-image');
 const paymentMethod = document.getElementById('payment-method');
 const paymentAmount = document.getElementById('payment-amount');
+
+const approve = document.getElementById('approve');
 
 let rawData = [];
 
@@ -162,6 +165,10 @@ function changeMap(e) {
     const data = rawData[index];
     changeMapSetting(index);
 
+    icon.src = './assets/Info.png';
+    statusText.textContent = listStatus[5];
+    approve.classList.remove('d-none');
+
     statusText.textContent = listStatus[data.status + 1];
     time.textContent = formatTime(data.created_at);
 
@@ -210,3 +217,12 @@ function changeMapSetting(index) {
 }
 
 socket.on('new_order', getData);
+socket.on('order_cancel', function(data) {
+    rawData = rawData.filter(d => d.no_resi !== data.no_resi);
+    if (noResi.value === data.no_resi) {
+        generateHistory(rawData);
+        icon.src = './assets/Error.png';
+        statusText.textContent = listStatus[2];
+        approve.classList.add('d-none');
+    }
+});

@@ -74,7 +74,7 @@ function getOrders(req, res) {
         JOIN user_payments ON orders.user_payment_id = user_payments.id
         JOIN payments ON user_payments.payment_id = payments.id
         JOIN order_details ON orders.order_detail_id = order_details.id
-        WHERE orders.driver_id IS NULL AND orders.status = 4 AND orders.user_id != ?
+        WHERE orders.driver_id IS NULL AND orders.status = 3 AND orders.user_id != ?
     `;
 
     db.query(query, [req.user.id], (err, results) => {
@@ -110,8 +110,40 @@ function delivery(req, res) {
     res.json({success: true, price});
 }
 
+function cancel(req, res) {
+    const query = 'UPDATE orders SET status = 1 WHERE no_resi = ? AND status = 3 AND user_id = ?';
+    db.query(query, [req.params.no_resi, req.user.id], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.json({success: false, message: 'Database error'});
+        } else {
+            if (result.affectedRows) {
+                db.query('SELECT user_payment_id, price FROM orders WHERE no_resi = ?', [req.params.no_resi], (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        res.json({success: false, message: 'Database error'});
+                    } else {
+                        db.query('UPDATE user_payments SET amount = amount + ? WHERE id = ?', [result[0].price, result[0].user_payment_id], (err, result) => {
+                            if (err) {
+                                console.error(err);
+                                res.json({success: false, message: 'Database error'});
+                            } else {
+                                const io = req.app.get('io');
+                                io.emit('order_cancel', {no_resi: req.params.no_resi});
+                                res.json({success: true, no_resi: req.params.no_resi});
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.json({success: false, message: 'Failed to cancel order'});
+            }
+        }
+    });
+}
+
 function orderTimeout(no_resi) {
     
 }
 
-module.exports = {getOrder, order, updateWholePesanan, updatePesanan, getOrders, swapPesanan, delivery};
+module.exports = {getOrder, order, updateWholePesanan, updatePesanan, getOrders, swapPesanan, delivery, cancel};

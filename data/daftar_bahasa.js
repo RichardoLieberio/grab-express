@@ -24,10 +24,9 @@ daftarBahasa.setData( {
         status: 'Semua status',
         status_type1: 'Selesai',
         status_type2: 'Dibatalkan',
-        status_type3: 'Dibatalkan pengemudi',
-        status_type4: 'Tidak ada pengemudi',
-        status_type5: 'Mencari pengemudi',
-        status_type6: 'Sedang diproses',
+        status_type3: 'Tidak ada pengemudi',
+        status_type4: 'Mencari pengemudi',
+        status_type5: 'Sedang diproses',
         booked_on: 'Waktu Pemesanan',
         sender: 'Pengirim',
         recipient: 'Penerima',
@@ -79,7 +78,8 @@ daftarBahasa.setData( {
         pesanan_dari: 'Penjemputan',
         pesanan_tujuan: 'Tujuan',
         jarak: 'Jarak',
-        metode_pembayaran: 'Pembayaran'
+        metode_pembayaran: 'Pembayaran',
+        cancel: 'Batalkan'
     },
     en: {
         menu1: 'Home',
@@ -102,10 +102,9 @@ daftarBahasa.setData( {
         status: 'All status',
         status_type1: 'Completed',
         status_type2: 'Cancelled',
-        status_type3: 'Cancelled by driver',
-        status_type4: 'Driver not found',
-        status_type5: 'Searching for driver',
-        status_type6: 'Processing',
+        status_type3: 'Driver not found',
+        status_type4: 'Searching for driver',
+        status_type5: 'Processing',
         booked_on: 'Booked On',
         sender: 'Sender',
         recipient: 'Recipient',
@@ -157,7 +156,8 @@ daftarBahasa.setData( {
         pesanan_dari: 'Pickup',
         pesanan_tujuan: 'Destination',
         jarak: 'Distance',
-        metode_pembayaran: 'Payment'
+        metode_pembayaran: 'Payment',
+        cancel: 'Cancel'
     }
 });
 
