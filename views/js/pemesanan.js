@@ -1,3 +1,5 @@
+const socket = io();
+
 const timeFormat = document.getElementById('time_format').value;
 const listStatus = document.getElementById('status').value.split(';;');
 const allSize = document.getElementById('all_size').value.split(';;');
@@ -199,7 +201,7 @@ function changeMap(e=null, no_resi=null) {
     time.textContent = formatTime(data.created_at);
 
     data.driver_id ? driverProfile.classList.remove('d-none') : driverProfile.classList.add('d-none');
-    driverName.textContent = data.driver_nama ?? '-';
+    driverName.textContent = data.driver_name ?? '-';
     driverPlat.textContent = data.plat ?? '-';
     driverRating.textContent = data.rating ?? '-';
 
@@ -243,3 +245,16 @@ function changeMapSetting(data) {
 
     map.fitBounds(bounds, {padding: [50, 50]});
 }
+
+socket.on('order_approved', function(data) {
+    rawData = rawData.map(d => (
+        d.no_resi === data.no_resi
+        ? {...d, status: 0, driver_id: data.driver.id, driver_name: data.driver.name, driver_email: data.driver.email, driver_phone: data.driver.phone, rating: data.driver.rating, plat: data.driver.plat}
+        : d
+    ));
+    const status = Array.from(filter).findIndex(el => el.classList.contains('s-selected'));
+    rerenderHistory(status);
+    if (saveNoResi === data.no_resi) {
+        changeMap(null, data.no_resi);
+    }
+});

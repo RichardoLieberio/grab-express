@@ -142,8 +142,30 @@ function cancel(req, res) {
     });
 }
 
+function approve(req, res) {
+    db.query('SELECT id, rating, plat FROM drivers WHERE user_id = ?', [req.user.id], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.json({success: false, message: 'Database error'});
+        } else {
+            const {id, rating, plat} = result[0];
+            db.query('UPDATE orders SET status = 0, driver_id = ?, finished_at = ? WHERE no_resi = ? AND status = 3', [id, new Date(), req.params.no_resi], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.json({success: false, message: 'Database error'});
+                } else {
+                    const {name, email, phone} = req.user;
+                    const io = req.app.get('io');
+                    io.emit('order_approved', {no_resi: req.params.no_resi, driver: {id, name, email, phone, rating, plat}});
+                    res.json({success: true});
+                }
+            });
+        }
+    });
+}
+
 function orderTimeout(no_resi) {
     
 }
 
-module.exports = {getOrder, order, updateWholePesanan, updatePesanan, getOrders, swapPesanan, delivery, cancel};
+module.exports = {getOrder, order, updateWholePesanan, updatePesanan, getOrders, swapPesanan, delivery, cancel, approve};

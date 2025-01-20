@@ -47,11 +47,22 @@
                 <div class="m-4 custom-margin custom-width d-flex flex-column justify-content-between align-items-end gap-5">
                     <div class="d-flex flex-column gap-5">
                         <div class="d-flex justify-content-between gap-5">
-                            <div class="d-flex align-items-center gap-2">
-                                <img id="icon" src="./assets/Info.png" alt="Icon" width="24px" height="24px">
-                                <div class="d-flex flex-column">
-                                    <span id="status-text" class="d-inline-block"><%= language.status_type5 %></span>
-                                    <small id="time" class="d-inline-block">09 Nov, 06:39 PM</small>
+                            <div class="d-flex gap-5">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img id="icon" src="./assets/Info.png" alt="Icon" width="24px" height="24px">
+                                    <div class="d-flex flex-column">
+                                        <span id="status-text" class="d-inline-block"><%= language.status_type5 %></span>
+                                        <small id="time" class="d-inline-block">09 Nov, 06:39 PM</small>
+                                    </div>
+                                </div>
+                                <div id="driver-profile" class="d-flex align-items-center gap-2">
+                                    <img src="./assets/Profile.jpg" alt="Profile" width="40px" height="40px">
+                                    <div class="d-flex flex-column">
+                                        <span id="driver-name" class="d-inline-block">Budi Yanto</span>
+                                        <small class="d-inline-block d-flex align-items-center gap-1">
+                                            <span id="driver-plat">BK 1278 AS</span> &#183; <span id="driver-rating">5</span> <img src="./assets/Star.png" alt="Star" width="16px" height="16px">
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                             <button id="approve" type="button" class="btn btn-secondary" style="width: 100px; background-color: #00b14f; outline: none; border: none;">Approve</button>

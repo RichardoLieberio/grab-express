@@ -17,5 +17,6 @@ routes.get('/orders', controller.getOrders);
 routes.patch('/swap', controller.swapPesanan);
 routes.patch('/delivery', controller.delivery);
 routes.patch('/cancel/:no_resi', controller.cancel);
+routes.patch('/approve/:no_resi', controller.approve);
 
 module.exports = routes;

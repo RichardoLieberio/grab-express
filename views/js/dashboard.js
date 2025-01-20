@@ -16,6 +16,10 @@ const noResi = document.getElementById('no_resi');
 const icon = document.getElementById('icon');
 const statusText = document.getElementById('status-text');
 const time = document.getElementById('time');
+const driverProfile = document.getElementById('driver-profile');
+const driverName = document.getElementById('driver-name');
+const driverPlat = document.getElementById('driver-plat');
+const driverRating = document.getElementById('driver-rating');
 const resi = document.getElementById('resi');
 const alamatPengirim = document.getElementById('alamat-pengirim');
 const alamatPenerima = document.getElementById('alamat-penerima');
@@ -86,6 +90,17 @@ filter.forEach(element => element.addEventListener('click', function(e) {
     filterBtn.textContent = listStatus[status];
     rerenderHistory(status);
 }));
+
+approve.addEventListener('click', async function(e) {
+    const response = await fetch('/api/pesanan/approve/' + noResi.value, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'}
+    });
+    const result = await response.json();
+    if (!result.success) {
+        alert(result.message);
+    }
+});
 
 async function getData() {
     const response = await fetch('/api/pesanan/orders');
@@ -168,6 +183,7 @@ function changeMap(e) {
     icon.src = './assets/Info.png';
     statusText.textContent = listStatus[5];
     approve.classList.remove('d-none');
+    driverProfile.classList.add('d-none');
 
     statusText.textContent = listStatus[data.status + 1];
     time.textContent = formatTime(data.created_at);
@@ -219,10 +235,24 @@ function changeMapSetting(index) {
 socket.on('new_order', getData);
 socket.on('order_cancel', function(data) {
     rawData = rawData.filter(d => d.no_resi !== data.no_resi);
+    generateHistory(rawData);
     if (noResi.value === data.no_resi) {
-        generateHistory(rawData);
         icon.src = './assets/Error.png';
         statusText.textContent = listStatus[2];
         approve.classList.add('d-none');
+    }
+});
+socket.on('order_approved', function(data) {
+    rawData = rawData.filter(d => d.no_resi !== data.no_resi);
+    generateHistory(rawData);
+    if (noResi.value === data.no_resi) {
+        icon.src = './assets/Success.png';
+        statusText.textContent = listStatus[1];
+        approve.classList.add('d-none');
+
+        driverProfile.classList.remove('d-none');
+        driverName.textContent = data.driver.name;
+        driverPlat.textContent = data.driver.plat;
+        driverRating.textContent = data.driver.rating;
     }
 });
