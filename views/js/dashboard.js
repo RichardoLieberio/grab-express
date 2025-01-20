@@ -256,3 +256,12 @@ socket.on('order_approved', function(data) {
         driverRating.textContent = data.driver.rating;
     }
 });
+socket.on('order_timeout', function(data) {
+    rawData = rawData.filter(d => d.no_resi !== data.no_resi);
+    generateHistory(rawData);
+    if (noResi.value === data.no_resi) {
+        icon.src = './assets/Warning.png';
+        statusText.textContent = listStatus[3];
+        approve.classList.add('d-none');
+    }
+});

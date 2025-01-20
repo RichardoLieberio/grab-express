@@ -34,7 +34,7 @@ async function order(req, res) {
 
         error.data.forEach((no_resi) => {
             setTimeout(function() {
-                orderTimeout(no_resi);
+                orderTimeout(no_resi, io);
             }, 30000);
         });
 
@@ -164,8 +164,25 @@ function approve(req, res) {
     });
 }
 
-function orderTimeout(no_resi) {
-    
+function orderTimeout(no_resi, io) {
+    db.query('UPDATE orders SET status = 2 WHERE no_resi = ? AND status = 3', [no_resi], (err, result) => {
+        if (err) {
+            console.error(err);
+        } else if (result.affectedRows) {
+            io.emit('order_timeout', {no_resi});
+            db.query('SELECT user_payment_id, price FROM orders WHERE no_resi = ?', [no_resi], (err, result) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    db.query('UPDATE user_payments SET amount = amount + ? WHERE id = ?', [result[0].price, result[0].user_payment_id], (err, result) => {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                }
+            })
+        }
+    });
 }
 
 module.exports = {getOrder, order, updateWholePesanan, updatePesanan, getOrders, swapPesanan, delivery, cancel, approve};

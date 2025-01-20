@@ -47,7 +47,7 @@
         <button id="delivery-options" type="button" data-bs-toggle="offcanvas" data-bs-target="#delivery-drawer" aria-controls="delivery-drawer" class="ps-3 d-flex align-items-center gap-2 rounded-3 border-0 disabled-not-allowed disabled-opacity-50" style="height: 64px; background-color: #f8f8f8; cursor: pointer; flex: 1;"
         <% if (!firstOrder.pickup.long || !firstOrder.pickup.lat || !firstOrder.destination.long || !firstOrder.destination.lat) { %><%= "disabled" %><% } %>>
             <img id="delivery-icon" src="./assets/<% if (firstOrder.delivery.option === 'instant') { %>Instant Delivery.png<% } else if (firstOrder.delivery.option === 'same_day') { %>Same Day Delivery.png<% } else { %>Delivery Option.svg<% } %>" alt="Delivery Option" width="32px" height="32px">
-            <span id="delivery-text"><% if (firstOrder.delivery.option === 'instant') { %>Instant<% } else if (firstOrder.delivery.option === 'same_day') { %>Same Day<% } else { %><%= language.option %>><% } %></span>
+            <span id="delivery-text"><% if (firstOrder.delivery.option === 'instant') { %>Instant<% } else if (firstOrder.delivery.option === 'same_day') { %>Same Day<% } else { %><%= language.option %><% } %></span>
         </button>
         <button id ="pemesanan-ganda" class="ps-3 text-black-50 d-flex align-items-center justify-content-start rounded-3 hide-breakpoint disabled-button border-0" style="width: 180px; height: 64px; cursor: pointer; background-color: #1EBD60;" <% if (firstOrder.price === null) { %>disabled<% } %>>
             <span class="d-flex flex-column text-white d-flex flex-column align-items-start gap-2">

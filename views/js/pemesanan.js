@@ -258,3 +258,12 @@ socket.on('order_approved', function(data) {
         changeMap(null, data.no_resi);
     }
 });
+
+socket.on('order_timeout', function(data) {
+    rawData = rawData.map(d => d.no_resi === data.no_resi ? {...d, status: 2} : d);
+    const status = Array.from(filter).findIndex(el => el.classList.contains('s-selected'));
+    rerenderHistory(status);
+    if (saveNoResi === data.no_resi) {
+        changeMap(null, data.no_resi);
+    }
+});
